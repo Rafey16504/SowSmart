@@ -10,3 +10,16 @@ const nodemailer = require("nodemailer");
 export const appRouter = express.Router();
 // const client = require('./db') 
 
+// const validate = (body: any): CreateBookType => {
+//     try {
+//       return CreateBookTypeSchema.parse(body);
+//     } catch (error) {
+//       if (error instanceof ZodError) {
+//         throw new Error(convertToReadableError(error));
+//       } else {
+//         throw error;
+//       }
+//     }
+//   };
+// make a validate function like this one for farmer
+
