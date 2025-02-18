@@ -34,21 +34,20 @@ function sendEmail(email: any, code: any) {
     });
   }
   
-  appRouter.post("/send-email/:id", async (req: any, res: any) => {
+  appRouter.post("/send-email", async (req: any, res: any) => {
     const { email } = req.body;
-    const id = req.params.id;
-    const verification_code:any = {};
-    verification_code[id] = Math.floor(
+    const verification_code:any = Math.floor(
       100000 + Math.random() * 900000
     ).toString();
-    
     try {
-      await sendEmail(email, verification_code[id]);
+      await sendEmail(email, verification_code);
       
-      return res.send({ message: verification_code[id] });
+      return res.send({ message: verification_code});
     } catch (error) {
       
       console.error('Error sending email:', error);
       return res.status(500).send('Could not send email!');
     } 
   });
+
+
