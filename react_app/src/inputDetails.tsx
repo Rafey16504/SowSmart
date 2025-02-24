@@ -1,5 +1,8 @@
 import React, { useState } from "react";
+<<<<<<< HEAD
 import { useNavigate } from "react-router-dom";
+=======
+>>>>>>> d38098b3eff49a93b610aad2f1104e62178e8780
 
 const InputDetails = () => {
   const [farmerName, setFarmerName] = useState("");
@@ -7,6 +10,7 @@ const InputDetails = () => {
   const [dob, setDob] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
 
+<<<<<<< HEAD
   const navigate = useNavigate();
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -18,6 +22,13 @@ const InputDetails = () => {
 
 
   
+=======
+  // const handleSubmit = (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   console.log({ farmerName, gender, dob, phoneNumber });
+  // };
+
+>>>>>>> d38098b3eff49a93b610aad2f1104e62178e8780
   return (
     <div className="w-screen h-screen flex items-center justify-center bg-green-50">
       <div className="w-11/12 max-w-md bg-white p-8 rounded-2xl shadow-md flex flex-col space-y-6">
