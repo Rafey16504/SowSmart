@@ -8,11 +8,15 @@ import { convertToReadableError } from "./zod-mapping";
 
 const nodemailer = require("nodemailer");
 export const appRouter = express.Router();
+<<<<<<< HEAD
 
 
 // testing branching
 
 
+=======
+//branch here
+>>>>>>> b1ac32ebd23800fc920736bb02eae4253790accd
 // const client = require('./db') 
 
 // const validate = (body: any): CreateBookType => {
