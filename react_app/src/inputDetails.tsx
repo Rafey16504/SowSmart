@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const InputDetails = () => {
   const [farmerName, setFarmerName] = useState("");
@@ -6,11 +7,17 @@ const InputDetails = () => {
   const [dob, setDob] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
 
+  const navigate = useNavigate();
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     console.log({ farmerName, gender, dob, phoneNumber });
+    navigate("/city-details"); // Redirect to City Details page
   };
 
+
+
+  
   return (
     <div className="w-screen h-screen flex items-center justify-center bg-green-50">
       <div className="w-11/12 max-w-md bg-white p-8 rounded-2xl shadow-md flex flex-col space-y-6">
