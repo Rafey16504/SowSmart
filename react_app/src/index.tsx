@@ -7,7 +7,10 @@ import SignUp from "./SignUp";
 import AnimatedRoute from "./AnimatedRoute";
 import reportWebVitals from "./reportWebVitals";
 import InputDetails from "./inputDetails";
+<<<<<<< HEAD
 import CityDetails from "./cityDetails";
+=======
+>>>>>>> d38098b3eff49a93b610aad2f1104e62178e8780
 
 
 const root = ReactDOM.createRoot(
@@ -34,6 +37,7 @@ const AnimatedRoutes = () => {
           </AnimatedRoute>
         }
       />
+<<<<<<< HEAD
       <Route
      path="/input-details"
      element={
@@ -47,6 +51,12 @@ const AnimatedRoutes = () => {
       path="/city-details"
       element={<CityDetails />}
     />
+=======
+
+
+  
+
+>>>>>>> d38098b3eff49a93b610aad2f1104e62178e8780
 
     </Routes>
   );
