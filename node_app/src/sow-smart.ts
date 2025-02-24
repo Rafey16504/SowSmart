@@ -8,6 +8,7 @@ import { convertToReadableError } from "./zod-mapping";
 const nodemailer = require("nodemailer");
 export const appRouter = express.Router();
 
+
 function sendEmail(email: any, code: any) {
     return new Promise((resolve: any, reject: any) => {
       var transporter = nodemailer.createTransport({
@@ -49,5 +50,8 @@ function sendEmail(email: any, code: any) {
       return res.status(500).send('Could not send email!');
     } 
   });
+
+// const client = require('./db') 
+
 
 
