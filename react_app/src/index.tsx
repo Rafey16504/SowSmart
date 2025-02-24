@@ -1,18 +1,16 @@
-// index.tsx
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter as Router, Route, Routes, useLocation } from "react-router-dom";
 import "./index.css";
 import App from "./App";
 import SignUp from "./SignUp";
-import AnimatedRoute from "./AnimatedRoute"; // Import the new component
+import AnimatedRoute from "./AnimatedRoute";
 import reportWebVitals from "./reportWebVitals";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
 
-// Create a wrapper component to pass the location to AnimatePresence
 const AnimatedRoutes = () => {
   const location = useLocation();
   return (
