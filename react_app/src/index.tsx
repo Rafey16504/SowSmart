@@ -6,6 +6,8 @@ import App from "./App";
 import SignUp from "./SignUp";
 import AnimatedRoute from "./AnimatedRoute";
 import reportWebVitals from "./reportWebVitals";
+import InputDetails from "./inputDetails";
+
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
@@ -31,6 +33,18 @@ const AnimatedRoutes = () => {
           </AnimatedRoute>
         }
       />
+
+
+        <Route
+        path="/input-details"
+        element={
+          <AnimatedRoute>
+            <InputDetails />
+          </AnimatedRoute>
+        }
+      />
+
+
     </Routes>
   );
 };
