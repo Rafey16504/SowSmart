@@ -1,12 +1,46 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
+import { BrowserRouter as Router, Route, Routes, useLocation } from "react-router-dom";
+import "./index.css";
 import App from "./App";
-import "./index.css"; // Import global styles
+import SignUp from "./SignUp";
+import AnimatedRoute from "./AnimatedRoute";
+import reportWebVitals from "./reportWebVitals";
 
-const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement);
+const root = ReactDOM.createRoot(
+  document.getElementById("root") as HTMLElement
+);
+
+const AnimatedRoutes = () => {
+  const location = useLocation();
+  return (
+    <Routes location={location} key={location.pathname}>
+      <Route
+        path="/"
+        element={
+          <AnimatedRoute>
+            <App />
+          </AnimatedRoute>
+        }
+      />
+      <Route
+        path="/signup"
+        element={
+          <AnimatedRoute>
+            <SignUp />
+          </AnimatedRoute>
+        }
+      />
+    </Routes>
+  );
+};
 
 root.render(
   <React.StrictMode>
-    <App />
+    <Router>
+      <AnimatedRoutes />
+    </Router>
   </React.StrictMode>
 );
+
+reportWebVitals();
