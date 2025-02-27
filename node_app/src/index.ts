@@ -1,7 +1,9 @@
 import express from 'express';
 import bodyParser from 'body-parser';
-import { appRouter } from './sow-smart';  // Assuming this file exports a router
+import { appRouter } from './sow-smart';  
 // import { client } from './db'; 
+import farmerRoutes from "./routes/farmerRoutes";
+import locationRoutes from "./routes/locationRoutes";
 import cors from 'cors';
 
 const app = express();
@@ -19,6 +21,8 @@ app.use((req, res, next) => {
 
 // Use the bookRouter for routing
 app.use('/', appRouter);
+app.use("/api", farmerRoutes);
+app.use("/api", locationRoutes);
 
 app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`);

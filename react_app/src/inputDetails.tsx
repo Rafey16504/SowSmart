@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const InputDetails = () => {
   const [farmerName, setFarmerName] = useState("");
@@ -9,10 +10,38 @@ const InputDetails = () => {
 
   const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // const handleSubmit = (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   console.log({ farmerName, gender, dob, phoneNumber });
+  //   navigate("/city-details"); // Redirect to City Details page
+  // };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log({ farmerName, gender, dob, phoneNumber });
-    navigate("/city-details"); // Redirect to City Details page
+  
+    console.log("Sending Data to Backend:", {
+      name: farmerName,
+      gender: gender,
+      dob: dob,
+      phone_number: phoneNumber,
+    });
+  
+    try {
+      //Send data to backend
+      const response = await axios.post("http://localhost:8000/api/register-farmer", {
+        name: farmerName,
+        gender: gender,
+        dob: dob,
+        phone_number: phoneNumber,
+      });
+  
+      console.log("Farmer Registered Successfully:", response.data);
+  
+      // Navigate to city details and pass the farmer ID
+      navigate("/city-details", { state: { farmerId: response.data.farmerId } });
+    } catch (error) {
+      console.error("Error Registering Farmer:", error);
+    }
   };
 
   return (

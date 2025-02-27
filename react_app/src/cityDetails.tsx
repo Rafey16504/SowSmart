@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
+import axios from "axios";
 
 const CityDetails = () => {
   const [province, setProvince] = useState("");
@@ -7,11 +8,31 @@ const CityDetails = () => {
   const [district, setDistrict] = useState("");
 
   const navigate = useNavigate();
+  const location = useLocation();
+  const farmerId = location.state?.farmerId;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // const handleSubmit = async (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   // console.log({ province, city, district });
+
+  //   navigate("/next-page"); // Change this to the actual next page route
+  // };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log({ province, city, district });
-    navigate("/next-page"); // Change this to the actual next page route
+    try {
+      await axios.post("http://localhost:8000/api/register-location", {
+        farmer_id: farmerId,
+        province: province,
+        city: city,
+        district: district,
+      });
+
+      console.log("Location Registered");
+      navigate("/next-page"); // Redirect to next page after submission
+    } catch (error) {
+      console.error("Error saving location", error);
+    }
   };
 
   return (
