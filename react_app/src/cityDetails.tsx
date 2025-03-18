@@ -18,8 +18,15 @@ const CityDetails = () => {
   //   navigate("/next-page"); // Change this to the actual next page route
   // };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) =>
+  {
     e.preventDefault();
+    if (!farmerId || !province || !city || !district)
+    {
+      console.error("All fields must be filled");
+      alert("Please fill in all fields before submitting.");
+      return;
+    }
     try {
       await axios.post("http://localhost:8000/api/register-location", {
         farmer_id: farmerId,
@@ -30,7 +37,8 @@ const CityDetails = () => {
 
       console.log("Location Registered");
       navigate("/next-page"); // Redirect to next page after submission
-    } catch (error) {
+    } catch (error)
+    {
       console.error("Error saving location", error);
     }
   };
@@ -39,7 +47,6 @@ const CityDetails = () => {
     <div className="w-screen h-screen flex items-center justify-center bg-green-50">
       <div className="w-11/12 max-w-md bg-white p-8 rounded-2xl shadow-md flex flex-col space-y-6">
         <h2 className="text-3xl font-bold text-green-800 text-center">City Details</h2>
-        
         <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
           <select
             value={province}
@@ -55,7 +62,6 @@ const CityDetails = () => {
             <option value="Gilgit-Baltistan">Gilgit-Baltistan</option>
             <option value="Azad Jammu & Kashmir">Azad Jammu & Kashmir</option>
           </select>
-          
           <input
             type="text"
             placeholder="City"
