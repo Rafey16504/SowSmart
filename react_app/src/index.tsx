@@ -6,6 +6,8 @@ import App from "./App";
 import SignUp from "./SignUp";
 import AnimatedRoute from "./AnimatedRoute";
 import reportWebVitals from "./reportWebVitals";
+import InputDetails from "./inputDetails";
+import CityDetails from "./cityDetails";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
@@ -30,6 +32,18 @@ const AnimatedRoutes = () => {
             <SignUp />
           </AnimatedRoute>
         }
+      />
+      <Route
+        path="/input-details"
+        element={
+          <AnimatedRoute>
+            <InputDetails />
+          </AnimatedRoute>
+        }
+      />
+      <Route
+        path="/city-details"
+        element={<CityDetails />}
       />
     </Routes>
   );
