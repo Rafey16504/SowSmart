@@ -51,7 +51,5 @@ function sendEmail(email: any, code: any) {
     } 
   });
 
-// const client = require('./db') 
-
 
 
