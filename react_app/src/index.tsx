@@ -1,6 +1,12 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { BrowserRouter as Router, Route, Routes, useLocation } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  useLocation,
+  Navigate,
+} from "react-router-dom";
 import "./index.css";
 import App from "./App";
 import SignUp from "./SignUp";
@@ -8,6 +14,7 @@ import AnimatedRoute from "./AnimatedRoute";
 import reportWebVitals from "./reportWebVitals";
 import InputDetails from "./inputDetails";
 import CityDetails from "./cityDetails";
+import SignIn from "./SignIn";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
@@ -17,8 +24,17 @@ const AnimatedRoutes = () => {
   const location = useLocation();
   return (
     <Routes location={location} key={location.pathname}>
+      <Route path="/" element={<Navigate to="/signin" />} />
       <Route
-        path="/"
+        path="/signin"
+        element={
+          <AnimatedRoute>
+            <SignIn />
+          </AnimatedRoute>
+        }
+      />
+      <Route
+        path="/app"
         element={
           <AnimatedRoute>
             <App />
@@ -41,10 +57,7 @@ const AnimatedRoutes = () => {
           </AnimatedRoute>
         }
       />
-      <Route
-        path="/city-details"
-        element={<CityDetails />}
-      />
+      <Route path="/city-details" element={<CityDetails />} />
     </Routes>
   );
 };
