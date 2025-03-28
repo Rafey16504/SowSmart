@@ -1,9 +1,9 @@
 import express from "express";
-import { registerFarmer, getFarmers } from "../controllers/farmerController";
+import { registerFarmer, getFarmer } from "../controllers/farmerController";
 
 const router = express.Router();
 
 router.post("/register-farmer", registerFarmer);
-router.get("/farmers", getFarmers);
+router.post("/get-farmer", getFarmer);
 
 export default router;
