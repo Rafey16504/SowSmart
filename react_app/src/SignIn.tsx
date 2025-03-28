@@ -1,9 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
-import { setTime } from "react-datepicker/dist/date_utils";
 
-const SignUp = () => {
+const SignIn = () => {
   const [email, setEmail] = useState("");
   const [isVerificationVisible, setIsVerificationVisible] = useState(false);
   const [verificationCode, setVerificationCode] = useState("");
@@ -13,19 +12,6 @@ const SignUp = () => {
 
   const navigate = useNavigate();
 
-  const checkExisting = async () => {
-    try {
-      const response = await axios.post(
-        "http://localhost:8000/api/get-farmer",
-        {
-          email: email,
-        }
-      );
-      return true;
-    } catch (error) {
-      return false;
-    }
-  };
   const handleEmailSubmit = async () => {
     if (!email) {
       setErrorMessage("Please enter your email!");
@@ -36,26 +22,34 @@ const SignUp = () => {
       setErrorMessage("Please enter a valid email!");
       return;
     }
-    if ((await checkExisting()) == true) {
-      setErrorMessage("Email already exists. Please sign in!");
-    } else {
-      setSuccessMessage("Please wait while we send you a verification code!");
-      try {
-        const { data } = await axios.post("http://localhost:8000/send-email/", {
-          email,
-        });
 
-        setIsVerificationVisible(true);
-        setSuccessMessage("Check your email for the verification code!");
-        setVerificationCode(data.message);
-      } catch (error) {
-        setErrorMessage("Error sending email. Please try again!");
-      }
+    try {
+      const response = await axios.post(
+        "http://localhost:8000/api/get-farmer",
+        {
+          email,
+        }
+      );
+
+      setSuccessMessage("Please wait while we send you a verification code!");
+      handleSendEmail();
+    } catch (error) {
+      setErrorMessage("Please sign up first!");
     }
   };
-  setTimeout(() => {
-    setErrorMessage("");
-  }, 1500);
+
+  const handleSendEmail = async () => {
+    try {
+      const { data } = await axios.post("http://localhost:8000/send-email/", {
+        email,
+      });
+      setIsVerificationVisible(true);
+      setSuccessMessage("Check your email for the verification code!");
+      setVerificationCode(data.message);
+    } catch (error) {
+      console.error("Error sending email:", error);
+    }
+  };
   const handleVerifyCode = () => {
     if (userInputCode !== verificationCode) {
       setErrorMessage("Invalid code. Please try again.");
@@ -64,7 +58,7 @@ const SignUp = () => {
 
     setSuccessMessage("Verification successful!");
     setTimeout(() => {
-      navigate("/input-details", { state: { email } });
+      navigate("/app");
     }, 1000);
   };
 
@@ -81,7 +75,9 @@ const SignUp = () => {
           <p className="font-grotesk font-semibold text-5xl text-green-700">
             Welcome
           </p>
-          <p className="font-grotesk text-lg text-green-600">Sign Up</p>
+          <p className="font-grotesk text-lg text-green-600">
+            Log In to your account
+          </p>
         </div>
 
         <div className="w-3/4 flex flex-col items-center space-y-6">
@@ -111,7 +107,7 @@ const SignUp = () => {
             className="bg-green-800 rounded-full px-16 py-3 text-white font-semibold w-3/4"
             onClick={handleEmailSubmit}
           >
-            Sign Up
+            Sign In
           </button>
         ) : (
           <button
@@ -122,9 +118,9 @@ const SignUp = () => {
           </button>
         )}
         <p className="text-center">
-          Already have an account?{" "}
-          <Link to="/signin" className="underline hover:text-blue-500">
-            Sign In
+          No account?{" "}
+          <Link to="/signup" className="underline hover:text-blue-500">
+            Sign up
           </Link>
         </p>
         {errorMessage && (
@@ -142,4 +138,4 @@ const SignUp = () => {
   );
 };
 
-export default SignUp;
+export default SignIn;

@@ -3,58 +3,49 @@ import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 
 const CityDetails = () => {
-  const [province, setProvince] = useState("");
-  const [city, setCity] = useState("");
-  const [district, setDistrict] = useState("");
+  const [selectedProvince, setSelectedProvince] = useState<string>("");
+  const [city, setCity] = useState<string>("");
+  const [district, setDistrict] = useState<string>("");
 
   const navigate = useNavigate();
   const location = useLocation();
   const farmerId = location.state?.farmerId;
 
-  // const handleSubmit = async (e: React.FormEvent) => {
-  //   e.preventDefault();
-  //   // console.log({ province, city, district });
-
-  //   navigate("/next-page"); // Change this to the actual next page route
-  // };
-
-  const handleSubmit = async (e: React.FormEvent) =>
-  {
-    e.preventDefault();
-    if (!farmerId || !province || !city || !district)
-    {
-      console.error("All fields must be filled");
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    if (!farmerId || !selectedProvince || !city || !district) {
       alert("Please fill in all fields before submitting.");
       return;
     }
     try {
       await axios.post("http://localhost:8000/api/register-location", {
-        farmer_id: farmerId,
-        province: province,
+        farmerId: farmerId,
+        province: selectedProvince,
         city: city,
         district: district,
       });
-
-      console.log("Location Registered");
-      navigate("/next-page"); // Redirect to next page after submission
-    } catch (error)
-    {
+      navigate("/");
+    } catch (error) {
       console.error("Error saving location", error);
     }
   };
 
   return (
-    <div className="w-screen h-screen flex items-center justify-center bg-green-50">
-      <div className="w-11/12 max-w-md bg-white p-8 rounded-2xl shadow-md flex flex-col space-y-6">
-        <h2 className="text-3xl font-bold text-green-800 text-center">City Details</h2>
+    <div className="flex items-center justify-center bg-green-50 h-screen">
+      <div className="max-w-md w-11/12 bg-white p-8 rounded-2xl shadow-md flex flex-col space-y-6">
+        <h2 className="text-3xl font-bold text-green-800 text-center">
+          City Details
+        </h2>
         <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
           <select
-            value={province}
-            onChange={(e) => setProvince(e.target.value)}
+            value={selectedProvince}
+            onChange={(event) => setSelectedProvince(event.target.value)}
             className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
             required
           >
-            <option value="" disabled>Select Province</option>
+            <option value="" disabled>
+              Select Province
+            </option>
             <option value="Punjab">Punjab</option>
             <option value="Sindh">Sindh</option>
             <option value="Khyber Pakhtunkhwa">Khyber Pakhtunkhwa</option>
@@ -66,20 +57,18 @@ const CityDetails = () => {
             type="text"
             placeholder="City"
             value={city}
-            onChange={(e) => setCity(e.target.value)}
+            onChange={(event) => setCity(event.target.value)}
             className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
             required
           />
-          
           <input
             type="text"
             placeholder="District"
             value={district}
-            onChange={(e) => setDistrict(e.target.value)}
+            onChange={(event) => setDistrict(event.target.value)}
             className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
             required
           />
-          
           <button
             type="submit"
             className="w-full p-3 bg-green-700 text-white rounded-lg font-semibold hover:bg-green-800"
