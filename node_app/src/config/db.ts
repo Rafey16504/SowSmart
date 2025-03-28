@@ -4,15 +4,16 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const pool = new Pool({
-    user: 'postgres',
-    host: 'localhost',
-    database: 'SowSmart',
-    password: '12345_qwert',
-    port: 5432,
+  user: "postgres",
+  host: "localhost",
+  database: "SowSmart",
+  password: "12345_qwert",
+  port: 5432,
 });
 
-pool.connect()
+pool
+  .connect()
   .then(() => console.log("Connected to PostgreSQL database successfully!"))
-  .catch(err => console.error("Database connection error:", err));
+  .catch((err) => console.error("Database connection error:", err));
 
 export default pool;
