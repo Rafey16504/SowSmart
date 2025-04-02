@@ -18,7 +18,7 @@ const CityDetails = () => {
       return;
     }
     try {
-      await axios.post("http://localhost:8000/api/register-location", {
+      await axios.post("http://localhost:8000/register-location", {
         farmerId: farmerId,
         province: selectedProvince,
         city: city,
