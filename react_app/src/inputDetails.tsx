@@ -20,7 +20,7 @@ const InputDetails = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:8000/api/register-farmer",
+        "http://localhost:8000/register-farmer",
         {
           name: farmerName,
           gender: gender,

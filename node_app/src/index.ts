@@ -1,8 +1,9 @@
 import express from "express";
 import bodyParser from "body-parser";
-import { appRouter } from "./sow-smart";
-import farmerRoutes from "./routes/farmerRoutes";
-import locationRoutes from "./routes/locationRoutes";
+import { getFarmer } from "./farmer-signup/check-existing";
+import { farmerRegister } from "./farmer-signup/farmer-register";
+import { farmerLocation } from "./farmer-signup/farmer-location";
+import { verifyEmail } from "./farmer-signup/send-email";
 import cors from "cors";
 
 const app = express();
@@ -18,9 +19,10 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use("/", appRouter);
-app.use("/api", farmerRoutes);
-app.use("/api", locationRoutes);
+app.use("/", getFarmer);
+app.use("/", farmerRegister);
+app.use("/", farmerLocation);
+app.use("/", verifyEmail);
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
