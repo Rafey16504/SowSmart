@@ -1,6 +1,6 @@
 const express = require("express");
 import { Request, Response } from "express";
-import pool from "../config/db";
+import pool from "../database/db";
 export const farmerLocation = express.Router();
 
 farmerLocation.post("/register-location", async (req: Request, res: Response) => {
