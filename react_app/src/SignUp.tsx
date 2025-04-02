@@ -16,7 +16,7 @@ const SignUp = () => {
   const checkExisting = async () => {
     try {
       const response = await axios.post(
-        "http://localhost:8000/api/get-farmer",
+        "http://localhost:8000/get-farmer",
         {
           email: email,
         }
