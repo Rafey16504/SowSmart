@@ -8,6 +8,8 @@ const CropRecommendation = () => {
   const [avgHumidity, setAvgHumidity] = useState<number | null>(null);
   const [avgRainfall, setAvgRainfall] = useState<number | null>(null);
   const [soilImage, setSoilImage] = useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   const soilPhMap: Record<string, [number, number]> = {
     sandy: [5.5, 6.0],
@@ -22,7 +24,7 @@ const CropRecommendation = () => {
 
   const fetchAverages = async (): Promise<boolean> => {
     if (!navigator.geolocation) {
-      alert("Geolocation is not supported by your browser.");
+      setErrorMessage("Geolocation is not supported by your browser.");
       return false;
     }
 
@@ -49,10 +51,12 @@ const CropRecommendation = () => {
             resolve(true);
           } else {
             console.error("Failed to fetch weather averages.");
+            setErrorMessage("Failed to fetch weather averages.");
             resolve(false);
           }
         } catch (error) {
           console.error("Error fetching weather averages:", error);
+          setErrorMessage("Error fetching weather averages.");
           resolve(false);
         }
       });
@@ -61,19 +65,19 @@ const CropRecommendation = () => {
 
   const handleSubmit = async () => {
     if (!soilType) {
-      alert("Please select soil type first.");
+      setErrorMessage("Please select soil type first.");
       return;
     }
 
     const fetched = await fetchAverages();
 
     if (!fetched) {
-      alert("Failed to fetch weather data.");
+      setErrorMessage("Failed to fetch weather data.");
       return;
     }
 
     if (avgTemp === null || avgHumidity === null || avgRainfall === null) {
-      alert("Weather data is incomplete.");
+      setErrorMessage("Weather data is incomplete.");
       return;
     }
 
@@ -94,23 +98,35 @@ const CropRecommendation = () => {
 
       const data = response.data;
       setRecommendation(data.recommendation || "No recommendation found.");
+      setSuccessMessage("Crop recommendation fetched successfully.");
     } catch (error) {
       console.error("Error sending data to backend:", error);
+      setErrorMessage("Error fetching crop recommendation.");
     }
   };
 
   return (
     <div className="font-grotesk bg-gray-50 min-h-screen flex flex-col justify-center items-center">
       <div className="flex justify-center bg-green-700 p-4 w-full">
-        <h1 className="text-white text-5xl font-semibold">
-          Crop Recommendation
-        </h1>
+        <h1 className="text-white text-5xl font-semibold">Crop Recommendation</h1>
       </div>
 
       <main className="flex-grow py-10 w-full max-w-4xl px-4">
         <h2 className="text-lg font-medium text-gray-700 mb-4 text-center">
           Select Soil Type:
         </h2>
+
+        {errorMessage && (
+          <div className="bg-red-100 text-red-700 p-3 rounded-md text-center mb-4">
+            {errorMessage}
+          </div>
+        )}
+
+        {successMessage && (
+          <div className="bg-green-100 text-green-700 p-3 rounded-md text-center mb-4">
+            {successMessage}
+          </div>
+        )}
 
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
           {Object.keys(soilPhMap).map((soil) => (
@@ -120,6 +136,7 @@ const CropRecommendation = () => {
                 setSoilType(soil);
                 setSoilImage(`/${soil}.jpg`);
                 setRecommendation(null);
+                setErrorMessage(null); // Reset error message when selecting a new soil
               }}
               className={`cursor-pointer border-4 rounded-lg overflow-hidden transition hover:scale-105 ${
                 soilType === soil ? "border-green-500" : "border-transparent"
