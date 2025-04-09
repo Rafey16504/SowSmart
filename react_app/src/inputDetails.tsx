@@ -1,41 +1,57 @@
 import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import axios from "axios";
 
 const InputDetails = () => {
   const [farmerName, setFarmerName] = useState("");
   const [gender, setGender] = useState("");
   const [dob, setDob] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
   const location = useLocation();
   const navigate = useNavigate();
   const email = location.state?.email;
+
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
+    setErrorMessage(null);
+    setSuccessMessage(null);
 
-    if (!farmerName || !gender || !dob || !phoneNumber) {
-      alert("Please complete all fields before submitting.");
+    if (!farmerName || !gender || !dob || !phoneNumber || !password || !confirmPassword) {
+      setErrorMessage("Please complete all fields before submitting.");
+      return;
+    }
+
+    if (phoneNumber.length > 11) {
+      setErrorMessage("Phone number should not be more than 11 digits.");
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setErrorMessage("Passwords do not match.");
       return;
     }
 
     try {
-      const response = await axios.post(
-        "http://localhost:8000/register-farmer",
-        {
-          name: farmerName,
-          gender: gender,
-          dateOfBirth: dob,
-          phoneNumber: phoneNumber,
-          email: email,
-        }
-      );
-
+      // Successfully passed validation, navigating to city details page
       navigate("/city-details", {
-        state: { farmerId: response.data.farmerId },
+        state: {
+          name: farmerName,
+          gender,
+          dob,
+          phoneNumber,
+          email,
+          password,
+        },
       });
+
+      setSuccessMessage("Registration successful! Redirecting to city details.");
     } catch (error) {
       console.error("Error registering farmer:", error);
-      alert("There was an error registering the farmer. Please try again.");
+      setErrorMessage("There was an error registering the farmer. Please try again.");
     }
   };
 
@@ -45,6 +61,20 @@ const InputDetails = () => {
         <h2 className="text-3xl font-bold text-green-800 text-center">
           Farmer Registration
         </h2>
+
+        {/* Error message */}
+        {errorMessage && (
+          <div className="bg-red-100 text-red-700 p-3 rounded-md text-center mb-4">
+            {errorMessage}
+          </div>
+        )}
+
+        {/* Success message */}
+        {successMessage && (
+          <div className="bg-green-100 text-green-700 p-3 rounded-md text-center mb-4">
+            {successMessage}
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
           <input
@@ -62,9 +92,7 @@ const InputDetails = () => {
             className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
             required
           >
-            <option value="" disabled>
-              Select Gender
-            </option>
+            <option value="" disabled>Select Gender</option>
             <option value="Male">Male</option>
             <option value="Female">Female</option>
             <option value="Other">Other</option>
@@ -83,6 +111,24 @@ const InputDetails = () => {
             placeholder="Phone Number"
             value={phoneNumber}
             onChange={(e) => setPhoneNumber(e.target.value)}
+            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+            required
+          />
+
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+            required
+          />
+
+          <input
+            type="password"
+            placeholder="Confirm Password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
             className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
             required
           />
