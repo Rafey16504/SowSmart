@@ -36,7 +36,6 @@ const InputDetails = () => {
     }
 
     try {
-      // Successfully passed validation, navigating to city details page
       navigate("/city-details", {
         state: {
           name: farmerName,

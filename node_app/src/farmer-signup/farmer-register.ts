@@ -26,7 +26,17 @@ farmerRegister.post("/register-farmer", async (req: Request, res: Response) => {
         (name, gender, dob, phone_number, email, password, province, city, district) 
        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
        RETURNING id`,
-      [name, gender, dateOfBirth, phoneNumber, email, hashedPassword, province, city, district]
+      [
+        name,
+        gender,
+        dateOfBirth,
+        phoneNumber,
+        email,
+        hashedPassword,
+        province,
+        city,
+        district,
+      ]
     );
 
     const { id: farmerId } = result.rows[0];
