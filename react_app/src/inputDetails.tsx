@@ -25,8 +25,8 @@ const InputDetails = () => {
       return;
     }
 
-    if (phoneNumber.length > 11) {
-      setErrorMessage("Phone number should not be more than 11 digits.");
+    if (phoneNumber.length != 11) {
+      setErrorMessage("Phone number should be 11 digits.");
       return;
     }
 
