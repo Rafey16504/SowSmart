@@ -1,22 +1,47 @@
 const express = require("express");
 import { Request, Response } from "express";
-import pool from "../database/db";
+import { spawn } from "child_process";
+import path from "path";
+
 export const cropRecommend = express.Router();
 
 cropRecommend.post("/crop-recommendation", async (req: Request, res: Response) => {
-    const { soilType, temperature, humidity, rainfall, ph } = req.body;
-  
-    console.log("Received for crop recommendation:", {
-      soilType,
-      temperature,
-      humidity,
-      rainfall,
-      ph,
-    }); // ye hata dena baad mai
-    
-    let recommendedCrop = "Maize"; // replace with ML model or logic later
-  
-  
-    res.json({ recommendation: recommendedCrop });
+  const { ph, temperature, humidity, rainfall } = req.body;
+
+  const args = [ph, temperature, humidity, rainfall].map(String);
+  const scriptPath = path.join(__dirname, "crop-model.py");
+
+  const python = spawn("python", [scriptPath, ...args]);
+
+  let output = "";
+  let errorOutput = "";
+
+  python.stdout.on("data", (data) => {
+    output += data.toString();
   });
-  
+
+  python.stderr.on("data", (data) => {
+    errorOutput += data.toString();
+    console.error(`Python stderr: ${data.toString()}`);
+  });
+
+  python.on("close", (code) => {
+    if (code !== 0) {
+      return res.status(500).json({
+        error: "Python script failed",
+        stderr: errorOutput,
+      });
+    }
+
+    try {
+      const result = JSON.parse(output);
+      res.json({ recommendation: result });
+    } catch (err) {
+      console.error("JSON parse error:", err);
+      res.status(500).json({
+        error: "Failed to parse Python output",
+        rawOutput: output,
+      });
+    }
+  });
+});
