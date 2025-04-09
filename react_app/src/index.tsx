@@ -16,6 +16,7 @@ import InputDetails from "./inputDetails";
 import CityDetails from "./cityDetails";
 import SignIn from "./SignIn";
 import WeeklyForecast from "./WeeklyForecast";
+import DiseaseDetection from "./disease_detection";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
@@ -67,6 +68,16 @@ const AnimatedRoutes = () => {
         }
       />
       <Route path="/city-details" element={<CityDetails />} />
+
+      
+      <Route
+        path="/disease-detection"
+        element={
+          <AnimatedRoute>
+            <DiseaseDetection />
+          </AnimatedRoute>
+        }
+      />
     </Routes>
   );
 };

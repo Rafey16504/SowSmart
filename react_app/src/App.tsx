@@ -124,6 +124,7 @@ function App() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
+            
             <div
               className="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition duration-300 cursor-pointer"
               onClick={handleWeatherContainerClick}
@@ -155,17 +156,15 @@ function App() {
               </p>
             </div>
 
-            {alerts.length > 0 && (
-              <div className="bg-red-100 p-6 rounded-lg shadow-lg col-span-1 md:col-span-2 lg:col-span-3">
-                <h3 className="text-xl font-semibold text-gray-800 mb-3">Weather Alerts</h3>
-                {alerts.map((alert, index) => (
-                  <div key={index} className="text-gray-700 mb-4">
-                    <h4 className="font-bold">{alert.event}</h4>
-                    <p>{alert.description}</p>
-                  </div>
-                ))}
-              </div>
-            )}
+            
+            <div
+              className="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition duration-300 cursor-pointer"
+              onClick={() => navigate("/disease-detection")}
+            >
+              <h3 className="text-xl font-semibold text-gray-800 mb-3">Plant Disease Detection</h3>
+              <p className="text-gray-600">Upload a picture of your crop to detect diseases.</p>
+            </div>
+
           </div>
         </div>
       </main>
