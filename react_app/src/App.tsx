@@ -109,7 +109,9 @@ function App() {
 
   const currentDate = new Date();
   const currentDay = getDayOfWeek(currentDate.toISOString());
-
+  const handleCropRecommendationClick = () => {
+    navigate("/crop-recommendation");
+  };
   return (
     <div className="font-grotesk bg-gray-50 min-h-screen flex flex-col justify-center items-center">
       <div className="flex justify-center bg-green-700 p-4 w-full">
@@ -154,7 +156,15 @@ function App() {
                 )}
               </p>
             </div>
-
+            <div
+  className="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition duration-300 cursor-pointer"
+  onClick={handleCropRecommendationClick}
+>
+  <h3 className="text-xl font-semibold text-gray-800 mb-3">Crop Recommendation</h3>
+  <p className="text-gray-600">
+    Get personalized crop suggestions based on your soil type.
+  </p>
+</div>
             {alerts.length > 0 && (
               <div className="bg-red-100 p-6 rounded-lg shadow-lg col-span-1 md:col-span-2 lg:col-span-3">
                 <h3 className="text-xl font-semibold text-gray-800 mb-3">Weather Alerts</h3>

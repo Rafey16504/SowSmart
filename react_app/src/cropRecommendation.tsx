@@ -35,14 +35,15 @@ const CropRecommendation = () => {
         const { latitude, longitude } = position.coords;
   
         try {
-          const response = await axios.post(
-            "http://localhost:8000/get-weather-average",
-            { latitude, longitude }
-          );
-  
-          const data = response.data;
-  
-          if (response) {
+          const response = await fetch("http://localhost:8000/get-weather-average", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ latitude, longitude }),
+          });
+    
+          const data = await response.json();
+    
+          if (response.ok) {
             setAvgTemp(data.averages.temperature);
             setAvgHumidity(data.averages.humidity);
             setAvgRainfall(data.averages.rainfall);

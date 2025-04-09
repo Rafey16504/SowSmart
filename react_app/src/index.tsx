@@ -16,6 +16,7 @@ import InputDetails from "./inputDetails";
 import CityDetails from "./cityDetails";
 import SignIn from "./SignIn";
 import WeeklyForecast from "./WeeklyForecast";
+import CropRecommendation from "./cropRecommendation";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
@@ -47,6 +48,14 @@ const AnimatedRoutes = () => {
         element={
           <AnimatedRoute>
             <WeeklyForecast />
+          </AnimatedRoute>
+        }
+      />
+      <Route
+        path="/crop-recommendation"
+        element={
+          <AnimatedRoute>
+            <CropRecommendation />
           </AnimatedRoute>
         }
       />
