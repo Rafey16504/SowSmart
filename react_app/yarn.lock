@@ -4937,9 +4937,6 @@ fs.realpath@^1.0.0:
   resolved "https://registry.npmjs.org/fs.realpath/-/fs.realpath-1.0.0.tgz"
   integrity sha512-OO0pH2lK6a0hZnAdau5ItzHPI6pUlvI7jMVnxUQRtw4owF2wk8lOSabtGDCTP4Ggrg2MbGnWO9X8K1t4+fGMDw==
 
-fsevents@^2.3.2, fsevents@~2.3.2:
-  version "2.3.3"
-
 function-bind@^1.1.2:
   version "1.1.2"
   resolved "https://registry.npmjs.org/function-bind/-/function-bind-1.1.2.tgz"
@@ -6514,10 +6511,10 @@ launch-editor@^2.6.0:
     picocolors "^1.0.0"
     shell-quote "^1.8.1"
 
-ldrs@^1.0.2:
-  version "1.0.2"
-  resolved "https://registry.npmjs.org/ldrs/-/ldrs-1.0.2.tgz"
-  integrity sha512-sYJmivdkIiHrUEqTrEWccBoLdaENpzbzkABI5rk8rRxTXrg9i2xVuDvUUuhOhJY3RmQyaoxs046pM1DCRdcIpg==
+ldrs@^1.1.6:
+  version "1.1.6"
+  resolved "https://registry.npmjs.org/ldrs/-/ldrs-1.1.6.tgz"
+  integrity sha512-cyFUYjmhjHaEnFXcZFeNg/jfDYUuzdf7sj71uqQeUoniFzcifSe3zxCf3qWqGD4R49wtAFTrHOpqPyCuzMik9g==
 
 leven@^3.1.0:
   version "3.1.0"
