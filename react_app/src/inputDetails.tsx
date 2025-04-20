@@ -20,12 +20,19 @@ const InputDetails = () => {
     setErrorMessage(null);
     setSuccessMessage(null);
 
-    if (!farmerName || !gender || !dob || !phoneNumber || !password || !confirmPassword) {
+    if (
+      !farmerName ||
+      !gender ||
+      !dob ||
+      !phoneNumber ||
+      !password ||
+      !confirmPassword
+    ) {
       setErrorMessage("Please complete all fields before submitting.");
       return;
     }
 
-    if (phoneNumber.length != 11) {
+    if (phoneNumber.length !== 11) {
       setErrorMessage("Phone number should be 11 digits.");
       return;
     }
@@ -36,60 +43,63 @@ const InputDetails = () => {
     }
 
     try {
-      navigate("/city-details", {
-        state: {
-          name: farmerName,
-          gender,
-          dob,
-          phoneNumber,
-          email,
-          password,
-        },
-      });
-
-      setSuccessMessage("Registration successful! Redirecting to city details.");
+      setTimeout(() => {
+        navigate("/city-details", {
+          state: {
+            name: farmerName,
+            gender,
+            dob,
+            phoneNumber,
+            email,
+            password,
+          },
+        });
+      }, 1000);
     } catch (error) {
       console.error("Error registering farmer:", error);
-      setErrorMessage("There was an error registering the farmer. Please try again.");
+      setErrorMessage("There was an error registering. Please try again.");
     }
   };
 
   return (
-    <div className="w-screen h-screen flex items-center justify-center bg-green-50">
-      <div className="w-11/12 max-w-md bg-white p-8 rounded-2xl shadow-md flex flex-col space-y-6">
-        <h2 className="text-3xl font-bold text-green-800 text-center">
-          Farmer Registration
+    <div className="w-screen h-screen flex items-center justify-center">
+      <div className="w-full max-w-lg bg-white p-10 flex flex-col items-center space-y-10">
+        <h2 className="text-4xl font-grotesk font-extrabold text-green-800 text-center">
+          Tell us about you
         </h2>
 
         {errorMessage && (
-          <div className="bg-red-100 text-red-700 p-3 rounded-md text-center mb-4">
+          <div className="font-grotesk text-red-600 bg-red-100 w-full p-3 rounded-lg text-center">
             {errorMessage}
           </div>
         )}
 
         {successMessage && (
-          <div className="bg-green-100 text-green-700 p-3 rounded-md text-center mb-4">
+          <div className="font-grotesk text-green-600 bg-green-100 w-full p-3 rounded-lg text-center">
             {successMessage}
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
+        <form
+          onSubmit={handleSubmit}
+          className="w-full flex flex-col space-y-10"
+        >
           <input
             type="text"
             placeholder="Farmer Name"
             value={farmerName}
             onChange={(e) => setFarmerName(e.target.value)}
-            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-            required
+            className="bg-transparent border-b-2 border-gray-300 focus:outline-none focus:border-green-500 pb-2 font-grotesk"
           />
 
           <select
             value={gender}
             onChange={(e) => setGender(e.target.value)}
-            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-            required
+            className="bg-transparent border-b-2 border-gray-300 focus:outline-none focus:border-green-500 pb-2 font-grotesk text-gray-700"
           >
-            <option value="" disabled>Select Gender</option>
+            <option value="" disabled>
+              Select Gender
+            </option>
             <option value="Male">Male</option>
             <option value="Female">Female</option>
             <option value="Other">Other</option>
@@ -99,8 +109,7 @@ const InputDetails = () => {
             type="date"
             value={dob}
             onChange={(e) => setDob(e.target.value)}
-            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-            required
+            className="bg-transparent border-b-2 border-gray-300 focus:outline-none focus:border-green-500 pb-2 font-grotesk"
           />
 
           <input
@@ -108,8 +117,7 @@ const InputDetails = () => {
             placeholder="Phone Number"
             value={phoneNumber}
             onChange={(e) => setPhoneNumber(e.target.value)}
-            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-            required
+            className="bg-transparent border-b-2 border-gray-300 focus:outline-none focus:border-green-500 pb-2 font-grotesk"
           />
 
           <input
@@ -117,8 +125,7 @@ const InputDetails = () => {
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-            required
+            className="bg-transparent border-b-2 border-gray-300 focus:outline-none focus:border-green-500 pb-2 font-grotesk"
           />
 
           <input
@@ -126,15 +133,14 @@ const InputDetails = () => {
             placeholder="Confirm Password"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
-            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-            required
+            className="bg-transparent border-b-2 border-gray-300 focus:outline-none focus:border-green-500 pb-2 font-grotesk"
           />
 
           <button
             type="submit"
-            className="w-full p-3 bg-green-700 text-white rounded-lg font-semibold hover:bg-green-800"
+            className="bg-green-800 text-white font-grotesk font-semibold rounded-full py-3 mt-4 hover:bg-green-700 transition-all"
           >
-            Register
+            Continue
           </button>
         </form>
       </div>

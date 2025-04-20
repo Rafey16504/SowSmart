@@ -36,7 +36,7 @@ const AnimatedRoutes = () => {
         }
       />
       <Route
-        path="/app"
+        path="/home"
         element={
           <AnimatedRoute>
             <App />
