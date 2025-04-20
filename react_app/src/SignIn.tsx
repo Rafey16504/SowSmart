@@ -1,12 +1,15 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
+import { Helix } from "ldrs/react";
+import "ldrs/react/Helix.css";
 
 const SignIn = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
 
@@ -31,9 +34,11 @@ const SignIn = () => {
       });
 
       if (response.data.success) {
+        setLoading(true);
         setTimeout(() => {
-          navigate("/app");
-        }, 1000);
+          setLoading(false);
+          navigate("/home");
+        }, 1500);
       } else {
         setErrorMessage("Incorrect email or password.");
       }
@@ -42,6 +47,14 @@ const SignIn = () => {
       setErrorMessage("Login failed. Please try again.");
     }
   };
+
+  if (loading) {
+    return (
+      <div className="w-screen h-screen flex items-center justify-center bg-white animate-fade-in">
+        <Helix size="90" speed="1.5" color="black" />
+      </div>
+    );
+  }
 
   return (
     <div className="w-screen h-screen flex items-center justify-center relative overflow-hidden">
@@ -62,24 +75,22 @@ const SignIn = () => {
         </div>
 
         <div className="w-3/4 flex flex-col items-center space-y-6">
-          <>
-            <input
-              type="email"
-              placeholder="Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="bg-transparent border-b-2 border-gray-200 focus:outline-none focus:border-green-500 w-full pb-2"
-              required
-            />
-            <input
-              type="password"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="bg-transparent border-b-2 border-gray-200 focus:outline-none focus:border-green-500 w-full pb-2"
-              required
-            />
-          </>
+          <input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="bg-transparent border-b-2 border-gray-200 focus:outline-none focus:border-green-500 w-full pb-2"
+            required
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="bg-transparent border-b-2 border-gray-200 focus:outline-none focus:border-green-500 w-full pb-2"
+            required
+          />
         </div>
 
         <button
