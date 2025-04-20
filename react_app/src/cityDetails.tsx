@@ -12,14 +12,8 @@ const CityDetails = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const {
-    name,
-    gender,
-    dob,
-    phoneNumber,
-    email,
-    password,
-  } = location.state || {};
+  const { name, gender, dob, phoneNumber, email, password } =
+    location.state || {};
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -27,15 +21,22 @@ const CityDetails = () => {
     setSuccessMessage("");
 
     if (
-      !name || !gender || !dob || !phoneNumber || !email || !password ||
-      !selectedProvince || !city || !district
+      !name ||
+      !gender ||
+      !dob ||
+      !phoneNumber ||
+      !email ||
+      !password ||
+      !selectedProvince ||
+      !city ||
+      !district
     ) {
       setErrorMessage("Please complete all fields before submitting.");
       return;
     }
 
     try {
-      const response = await axios.post("http://localhost:8000/register-farmer", {
+      await axios.post("http://localhost:8000/register-farmer", {
         name,
         gender,
         dateOfBirth: dob,
@@ -50,40 +51,47 @@ const CityDetails = () => {
       setSuccessMessage("Registration successful! Redirecting...");
       setTimeout(() => {
         navigate("/");
-      }, 2000);
+      }, 1500);
     } catch (error) {
       console.error("Error registering farmer:", error);
-      setErrorMessage("There was an error registering the farmer. Please try again.");
+      setErrorMessage(
+        "There was an error registering the farmer. Please try again."
+      );
     }
   };
 
   return (
-    <div className="flex items-center justify-center bg-green-50 h-screen">
-      <div className="max-w-md w-11/12 bg-white p-8 rounded-2xl shadow-md flex flex-col space-y-6">
-        <h2 className="text-3xl font-bold text-green-800 text-center">
-          City Details
+    <div className="flex items-center justify-center h-screen">
+      <div className="max-w-lg w-full bg-white p-10 flex flex-col space-y-10">
+        <h2 className="text-4xl font-extrabold font-grotesk text-green-800 text-center">
+          Area Details
         </h2>
 
         {errorMessage && (
-          <div className="bg-red-100 text-red-700 p-3 rounded-md text-center">
+          <div className="bg-red-100 text-red-600 p-3 rounded-md text-center font-grotesk">
             {errorMessage}
           </div>
         )}
 
         {successMessage && (
-          <div className="bg-green-100 text-green-700 p-3 rounded-md text-center">
+          <div className="bg-green-100 text-green-600 p-3 rounded-md text-center font-grotesk">
             {successMessage}
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
+        <form
+          onSubmit={handleSubmit}
+          className="flex flex-col space-y-10 font-grotesk"
+        >
           <select
             value={selectedProvince}
             onChange={(e) => setSelectedProvince(e.target.value)}
-            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+            className="bg-transparent border-b-2 border-gray-300 focus:outline-none focus:border-green-500 pb-2"
             required
           >
-            <option value="" disabled>Select Province</option>
+            <option value="" disabled>
+              Select Province
+            </option>
             <option value="Punjab">Punjab</option>
             <option value="Sindh">Sindh</option>
             <option value="Khyber Pakhtunkhwa">Khyber Pakhtunkhwa</option>
@@ -97,7 +105,7 @@ const CityDetails = () => {
             placeholder="City"
             value={city}
             onChange={(e) => setCity(e.target.value)}
-            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+            className="bg-transparent border-b-2 border-gray-300 focus:outline-none focus:border-green-500 pb-2"
             required
           />
 
@@ -106,13 +114,13 @@ const CityDetails = () => {
             placeholder="District"
             value={district}
             onChange={(e) => setDistrict(e.target.value)}
-            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+            className="bg-transparent border-b-2 border-gray-300 focus:outline-none focus:border-green-500 pb-2"
             required
           />
 
           <button
             type="submit"
-            className="w-full p-3 bg-green-700 text-white rounded-lg font-semibold hover:bg-green-800"
+            className="bg-green-800 text-white font-semibold rounded-full py-3 hover:bg-green-700 transition-all"
           >
             Register
           </button>
