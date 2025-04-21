@@ -153,7 +153,7 @@ function App() {
           </p>
         </section>
 
-        <section className="grid grid-cols-1 md:grid-cols-2 gap-10 w-full max-w-5xl">
+        <section className="grid grid-cols-1 md:grid-cols-3 gap-10 w-full max-w-6xl">
           <div
             onClick={handleWeatherContainerClick}
             className="relative bg-gradient-to-br from-green-200 to-green-50 p-6 rounded-2xl shadow-lg hover:scale-105 hover:shadow-2xl transition-transform duration-300 cursor-pointer border border-green-300"
@@ -201,6 +201,18 @@ function App() {
             </h3>
             <p className="text-gray-700">
               Get personalized crop suggestions based on your soil and weather.
+            </p>
+          </div>
+
+          <div
+            onClick={() => navigate("/ai-chat")}
+            className="relative bg-gradient-to-br from-purple-100 to-purple-50 p-6 rounded-2xl shadow-lg hover:scale-105 hover:shadow-2xl transition-transform duration-300 cursor-pointer border border-purple-300"
+          >
+            <h3 className="text-xl font-semibold text-gray-800 mb-3">
+              AI Chatbot
+            </h3>
+            <p className="text-gray-700">
+              Ask farming-related questions to our smart AI assistant.
             </p>
           </div>
         </section>

@@ -21,6 +21,7 @@
     "multer": "^1.4.5-lts.1",
     "mysql": "^2.18.1",
     "nodemailer": "^6.9.16",
+    "openai": "^4.95.1",
     "pg": "^8.13.3",
     "ts-node": "^10.9.2",
     "typescript": "^5.7.3",

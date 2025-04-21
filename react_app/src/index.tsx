@@ -17,6 +17,7 @@ import CityDetails from "./cityDetails";
 import SignIn from "./SignIn";
 import WeeklyForecast from "./WeeklyForecast";
 import CropRecommendation from "./cropRecommendation";
+import AIChatPage from "./AIChat";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
@@ -40,6 +41,14 @@ const AnimatedRoutes = () => {
         element={
           <AnimatedRoute>
             <App />
+          </AnimatedRoute>
+        }
+      />
+      <Route
+        path="/ai-chat"
+        element={
+          <AnimatedRoute>
+            <AIChatPage />
           </AnimatedRoute>
         }
       />
