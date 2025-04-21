@@ -8,6 +8,7 @@ import { locationRouter } from "./location-api/location";
 import { weatherRouter } from "./weather-api/openweather";
 import { cropRecommend } from "./recommendation-api/crop-recommendation";
 import { getFarmer } from "./farmer-signup/check-existing";
+import { aiModel } from "./ai-chatbot/open-ai";
 import cors from "cors";
 
 const app = express();
@@ -31,6 +32,7 @@ app.use("/", verifyEmail);
 app.use("/", locationRouter);
 app.use("/", weatherRouter);
 app.use("/", cropRecommend);
+app.use("/", aiModel);
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
