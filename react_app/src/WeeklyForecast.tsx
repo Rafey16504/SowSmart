@@ -35,7 +35,7 @@ const WeeklyForecast: FC = () => {
   };
 
   return (
-    <div className="relative min-h-screen font-grotesk overflow-hidden scroll-smooth ">
+    <div className="relative min-h-screen font-grotesk overflow-hidden scroll-smooth">
       <div className="absolute inset-0 bg-gradient-to-tr from-green-100 via-white to-green-200 z-0" />
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,_var(--tw-gradient-stops))] from-green-200/40 via-white/0 to-green-100/10 z-0" />
       <div className="absolute top-0 left-0 w-full h-full bg-noise-pattern opacity-5 z-0 pointer-events-none" />
@@ -61,12 +61,12 @@ const WeeklyForecast: FC = () => {
             />
           </svg>
         </a>
-        <h1 className="text-white text-4xl sm:text-5xl font-bold drop-shadow-md animate-fade-in">
+        <h1 className="text-white text-4xl sm:text-5xl font-bold drop-shadow-md">
           Weekly Forecast
         </h1>
       </header>
 
-      <main className="relative z-10 flex-grow py-10 w-full max-w-6xl mx-auto px-4">
+      <main className="relative z-10 flex-grow py-10 w-full max-w-6xl mx-auto px-4 animate-fade-up">
         <h2 className="text-3xl font-semibold text-center text-gray-800 mb-10">
           7-Day Outlook
         </h2>
@@ -74,7 +74,8 @@ const WeeklyForecast: FC = () => {
           {weeklyWeather.map((day, index) => (
             <div
               key={index}
-              className="bg-white/70 backdrop-blur-lg p-6 rounded-3xl shadow-xl hover:shadow-2xl transition-shadow duration-300 text-center border border-green-200"
+              className={`bg-white/70 backdrop-blur-lg p-6 rounded-3xl shadow-xl hover:shadow-2xl transition-shadow duration-300 text-center border border-green-200 animate-fade-in-up`}
+              style={{ animationDelay: `${index * 100}ms`, animationFillMode: "both" }}
             >
               <p className="text-lg font-semibold text-green-800 mb-1">
                 {getDayOfWeek(day.date)},{" "}
@@ -97,7 +98,7 @@ const WeeklyForecast: FC = () => {
         </div>
       </main>
 
-      <footer className="relative bg-gray-900 py-4 text-center text-white text-sm z-10 rounded-t-3xl">
+      <footer className="relative bg-gray-900 py-4 text-center text-white text-sm z-10 rounded-t-3xl animate-fade-in">
         <p>&copy; 2025 SowSmart. All rights reserved.</p>
       </footer>
     </div>
