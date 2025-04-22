@@ -1,7 +1,6 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
-import { setTime } from "react-datepicker/dist/date_utils";
 
 const SignUp = () => {
   const [email, setEmail] = useState("");
@@ -21,6 +20,7 @@ const SignUp = () => {
           email: email,
         }
       );
+      if(response){}
       return true;
     } catch (error) {
       return false;

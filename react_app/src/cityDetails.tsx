@@ -3,44 +3,90 @@ import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 
 const CityDetails = () => {
-  const [selectedProvince, setSelectedProvince] = useState<string>("");
-  const [city, setCity] = useState<string>("");
-  const [district, setDistrict] = useState<string>("");
+  const [selectedProvince, setSelectedProvince] = useState("");
+  const [city, setCity] = useState("");
+  const [district, setDistrict] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
 
-  const navigate = useNavigate();
   const location = useLocation();
-  const farmerId = location.state?.farmerId;
+  const navigate = useNavigate();
+
+  const { name, gender, dob, phoneNumber, email, password } =
+    location.state || {};
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    if (!farmerId || !selectedProvince || !city || !district) {
-      alert("Please fill in all fields before submitting.");
+    setErrorMessage("");
+    setSuccessMessage("");
+
+    if (
+      !name ||
+      !gender ||
+      !dob ||
+      !phoneNumber ||
+      !email ||
+      !password ||
+      !selectedProvince ||
+      !city ||
+      !district
+    ) {
+      setErrorMessage("Please complete all fields before submitting.");
       return;
     }
+
     try {
-      await axios.post("http://localhost:8000/register-location", {
-        farmerId: farmerId,
+      await axios.post("http://localhost:8000/register-farmer", {
+        name,
+        gender,
+        dateOfBirth: dob,
+        phoneNumber,
+        email,
+        password,
         province: selectedProvince,
-        city: city,
-        district: district,
+        city,
+        district,
       });
-      navigate("/");
+
+      setSuccessMessage("Registration successful! Redirecting...");
+      setTimeout(() => {
+        navigate("/");
+      }, 1500);
     } catch (error) {
-      console.error("Error saving location", error);
+      console.error("Error registering farmer:", error);
+      setErrorMessage(
+        "There was an error registering the farmer. Please try again."
+      );
     }
   };
 
   return (
-    <div className="flex items-center justify-center bg-green-50 h-screen">
-      <div className="max-w-md w-11/12 bg-white p-8 rounded-2xl shadow-md flex flex-col space-y-6">
-        <h2 className="text-3xl font-bold text-green-800 text-center">
-          City Details
+    <div className="flex items-center justify-center h-screen">
+      <div className="max-w-lg w-full bg-white p-10 flex flex-col space-y-10">
+        <h2 className="text-4xl font-extrabold font-grotesk text-green-800 text-center">
+          Area Details
         </h2>
-        <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
+
+        {errorMessage && (
+          <div className="bg-red-100 text-red-600 p-3 rounded-md text-center font-grotesk">
+            {errorMessage}
+          </div>
+        )}
+
+        {successMessage && (
+          <div className="bg-green-100 text-green-600 p-3 rounded-md text-center font-grotesk">
+            {successMessage}
+          </div>
+        )}
+
+        <form
+          onSubmit={handleSubmit}
+          className="flex flex-col space-y-10 font-grotesk"
+        >
           <select
             value={selectedProvince}
-            onChange={(event) => setSelectedProvince(event.target.value)}
-            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+            onChange={(e) => setSelectedProvince(e.target.value)}
+            className="bg-transparent border-b-2 border-gray-300 focus:outline-none focus:border-green-500 pb-2"
             required
           >
             <option value="" disabled>
@@ -53,27 +99,30 @@ const CityDetails = () => {
             <option value="Gilgit-Baltistan">Gilgit-Baltistan</option>
             <option value="Azad Jammu & Kashmir">Azad Jammu & Kashmir</option>
           </select>
+
           <input
             type="text"
             placeholder="City"
             value={city}
-            onChange={(event) => setCity(event.target.value)}
-            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+            onChange={(e) => setCity(e.target.value)}
+            className="bg-transparent border-b-2 border-gray-300 focus:outline-none focus:border-green-500 pb-2"
             required
           />
+
           <input
             type="text"
             placeholder="District"
             value={district}
-            onChange={(event) => setDistrict(event.target.value)}
-            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+            onChange={(e) => setDistrict(e.target.value)}
+            className="bg-transparent border-b-2 border-gray-300 focus:outline-none focus:border-green-500 pb-2"
             required
           />
+
           <button
             type="submit"
-            className="w-full p-3 bg-green-700 text-white rounded-lg font-semibold hover:bg-green-800"
+            className="bg-green-800 text-white font-semibold rounded-full py-3 hover:bg-green-700 transition-all"
           >
-            Next
+            Register
           </button>
         </form>
       </div>
