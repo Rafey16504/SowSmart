@@ -1,66 +1,101 @@
 import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import axios from "axios";
 
 const InputDetails = () => {
   const [farmerName, setFarmerName] = useState("");
   const [gender, setGender] = useState("");
   const [dob, setDob] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
   const location = useLocation();
   const navigate = useNavigate();
   const email = location.state?.email;
+
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
+    setErrorMessage(null);
+    setSuccessMessage(null);
 
-    if (!farmerName || !gender || !dob || !phoneNumber) {
-      alert("Please complete all fields before submitting.");
+    if (
+      !farmerName ||
+      !gender ||
+      !dob ||
+      !phoneNumber ||
+      !password ||
+      !confirmPassword
+    ) {
+      setErrorMessage("Please complete all fields before submitting.");
+      return;
+    }
+
+    if (phoneNumber.length !== 11) {
+      setErrorMessage("Phone number should be 11 digits.");
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setErrorMessage("Passwords do not match.");
       return;
     }
 
     try {
-      const response = await axios.post(
-        "http://localhost:8000/register-farmer",
-        {
-          name: farmerName,
-          gender: gender,
-          dateOfBirth: dob,
-          phoneNumber: phoneNumber,
-          email: email,
-        }
-      );
-
-      navigate("/city-details", {
-        state: { farmerId: response.data.farmerId },
-      });
+      setTimeout(() => {
+        navigate("/city-details", {
+          state: {
+            name: farmerName,
+            gender,
+            dob,
+            phoneNumber,
+            email,
+            password,
+          },
+        });
+      }, 1000);
     } catch (error) {
       console.error("Error registering farmer:", error);
-      alert("There was an error registering the farmer. Please try again.");
+      setErrorMessage("There was an error registering. Please try again.");
     }
   };
 
   return (
-    <div className="w-screen h-screen flex items-center justify-center bg-green-50">
-      <div className="w-11/12 max-w-md bg-white p-8 rounded-2xl shadow-md flex flex-col space-y-6">
-        <h2 className="text-3xl font-bold text-green-800 text-center">
-          Farmer Registration
+    <div className="w-screen h-screen flex items-center justify-center">
+      <div className="w-full max-w-lg bg-white p-10 flex flex-col items-center space-y-10">
+        <h2 className="text-4xl font-grotesk font-extrabold text-green-800 text-center">
+          Tell us about you
         </h2>
 
-        <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
+        {errorMessage && (
+          <div className="font-grotesk text-red-600 bg-red-100 w-full p-3 rounded-lg text-center">
+            {errorMessage}
+          </div>
+        )}
+
+        {successMessage && (
+          <div className="font-grotesk text-green-600 bg-green-100 w-full p-3 rounded-lg text-center">
+            {successMessage}
+          </div>
+        )}
+
+        <form
+          onSubmit={handleSubmit}
+          className="w-full flex flex-col space-y-10"
+        >
           <input
             type="text"
             placeholder="Farmer Name"
             value={farmerName}
             onChange={(e) => setFarmerName(e.target.value)}
-            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-            required
+            className="bg-transparent border-b-2 border-gray-300 focus:outline-none focus:border-green-500 pb-2 font-grotesk"
           />
 
           <select
             value={gender}
             onChange={(e) => setGender(e.target.value)}
-            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-            required
+            className="bg-transparent border-b-2 border-gray-300 focus:outline-none focus:border-green-500 pb-2 font-grotesk text-gray-700"
           >
             <option value="" disabled>
               Select Gender
@@ -74,8 +109,7 @@ const InputDetails = () => {
             type="date"
             value={dob}
             onChange={(e) => setDob(e.target.value)}
-            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-            required
+            className="bg-transparent border-b-2 border-gray-300 focus:outline-none focus:border-green-500 pb-2 font-grotesk"
           />
 
           <input
@@ -83,15 +117,30 @@ const InputDetails = () => {
             placeholder="Phone Number"
             value={phoneNumber}
             onChange={(e) => setPhoneNumber(e.target.value)}
-            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-            required
+            className="bg-transparent border-b-2 border-gray-300 focus:outline-none focus:border-green-500 pb-2 font-grotesk"
+          />
+
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="bg-transparent border-b-2 border-gray-300 focus:outline-none focus:border-green-500 pb-2 font-grotesk"
+          />
+
+          <input
+            type="password"
+            placeholder="Confirm Password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            className="bg-transparent border-b-2 border-gray-300 focus:outline-none focus:border-green-500 pb-2 font-grotesk"
           />
 
           <button
             type="submit"
-            className="w-full p-3 bg-green-700 text-white rounded-lg font-semibold hover:bg-green-800"
+            className="bg-green-800 text-white font-grotesk font-semibold rounded-full py-3 mt-4 hover:bg-green-700 transition-all"
           >
-            Register
+            Continue
           </button>
         </form>
       </div>
