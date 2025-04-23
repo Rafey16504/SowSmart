@@ -16,7 +16,9 @@ const soilPhMap: Record<string, [number, number]> = {
 
 const CropRecommendation = () => {
   const [soilType, setSoilType] = useState("");
-  const [recommendation, setRecommendation] = useState<string[] | string | null>(null);
+  const [recommendation, setRecommendation] = useState<
+    string[] | string | null
+  >(null);
   const [avgTemp, setAvgTemp] = useState<number | null>(null);
   const [avgHumidity, setAvgHumidity] = useState<number | null>(null);
   const [avgRainfall, setAvgRainfall] = useState<number | null>(null);
@@ -39,7 +41,11 @@ const CropRecommendation = () => {
     setSubmitted(false);
   };
 
-  const fetchWeatherAverages = async (): Promise<{ temp: number; humidity: number; rainfall: number } | null> => {
+  const fetchWeatherAverages = async (): Promise<{
+    temp: number;
+    humidity: number;
+    rainfall: number;
+  } | null> => {
     if (!navigator.geolocation) {
       setErrorMessage("Geolocation is not supported by your browser.");
       return null;
@@ -49,11 +55,14 @@ const CropRecommendation = () => {
       navigator.geolocation.getCurrentPosition(async (position) => {
         const { latitude, longitude } = position.coords;
         try {
-          const response = await fetch("http://localhost:8000/get-weather-average", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ latitude, longitude }),
-          });
+          const response = await fetch(
+            "http://localhost:8000/get-weather-average",
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ latitude, longitude }),
+            }
+          );
 
           const data = await response.json();
 
@@ -103,13 +112,16 @@ const CropRecommendation = () => {
     const avgPh = (phMin + phMax) / 2;
 
     try {
-      const response = await axios.post("http://localhost:8000/crop-recommendation", {
-        soilType,
-        temperature: averages.temp,
-        humidity: averages.humidity,
-        rainfall: averages.rainfall,
-        ph: avgPh,
-      });
+      const response = await axios.post(
+        "http://localhost:8000/crop-recommendation",
+        {
+          soilType,
+          temperature: averages.temp,
+          humidity: averages.humidity,
+          rainfall: averages.rainfall,
+          ph: avgPh,
+        }
+      );
 
       const data = response.data;
       setRecommendation(data.recommendation || "No recommendation found.");
@@ -124,7 +136,6 @@ const CropRecommendation = () => {
 
   return (
     <div className="relative font-grotesk min-h-screen flex flex-col items-center overflow-hidden">
-      {/* Background transitions */}
       <div className="absolute inset-0 bg-gradient-to-tr from-green-50 via-white to-green-100 z-0" />
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,_var(--tw-gradient-stops))] from-green-200/40 via-white/0 to-green-300/10 z-0" />
       <div className="absolute top-0 left-0 w-full h-full bg-noise-pattern opacity-5 z-0 pointer-events-none" />
@@ -135,19 +146,36 @@ const CropRecommendation = () => {
           className="absolute left-2 top-1/2 -translate-y-1/2 text-white hover:text-green-200 transition"
           title="Go Back"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-7 h-7 md:w-8 md:h-8">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="currentColor"
+            className="w-7 h-7 md:w-8 md:h-8"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M15.75 19.5L8.25 12l7.5-7.5"
+            />
           </svg>
         </a>
-        <h1 className="text-white text-3xl md:text-5xl font-bold text-center">Crop Recommendation</h1>
+        <h1 className="text-white text-3xl md:text-5xl font-bold text-center">
+          Crop Recommendation
+        </h1>
       </header>
 
       <main className="flex-grow py-10 w-full max-w-5xl px-4 relative z-10">
         {!submitted && !loading && (
           <div className="bg-white border-l-8 border-green-600 shadow-xl rounded-xl p-6 mb-10 text-center animate-fade-in">
-            <h2 className="text-2xl font-bold text-green-800 mb-2">🌾 Know Before You Sow</h2>
+            <h2 className="text-2xl font-bold text-green-800 mb-2">
+              🌾 Know Before You Sow
+            </h2>
             <p className="text-gray-700 text-lg">
-              Discover the best crops for your soil and climate, powered by smart weather insights. Just pick your soil type and let us guide your harvest.
+              Discover the best crops for your soil and climate, powered by
+              smart weather insights. Just pick your soil type and let us guide
+              your harvest.
             </p>
           </div>
         )}
@@ -172,10 +200,16 @@ const CropRecommendation = () => {
                   key={soil}
                   onClick={() => handleSoilSelection(soil)}
                   className={`relative cursor-pointer border-4 rounded-2xl overflow-hidden shadow-md transition-transform hover:scale-105 hover:shadow-lg ${
-                    soilType === soil ? "border-green-600" : "border-transparent"
+                    soilType === soil
+                      ? "border-green-600"
+                      : "border-transparent"
                   }`}
                 >
-                  <img src={`/${soil}.jpg`} alt={`${soil} soil`} className="w-full h-36 object-cover" />
+                  <img
+                    src={`/${soil}.jpg`}
+                    alt={`${soil} soil`}
+                    className="w-full h-36 object-cover"
+                  />
                   <div className="absolute bottom-0 w-full bg-black/50 text-white text-center py-2 text-sm font-semibold capitalize">
                     {soil.replace(/([A-Z])/g, " $1")}
                   </div>
@@ -200,13 +234,20 @@ const CropRecommendation = () => {
             <div className="flex items-center justify-center gap-4 mb-6 text-center">
               <span className="text-green-700 text-3xl">🌱</span>
               <div>
-                <h3 className="text-2xl font-bold text-green-800">Best Crops for</h3>
-                <p className="text-xl font-semibold text-green-800 capitalize">{soilType} Soil</p>
+                <h3 className="text-2xl font-bold text-green-800">
+                  Best Crops for
+                </h3>
+                <p className="text-xl font-semibold text-green-800 capitalize">
+                  {soilType} Soil
+                </p>
               </div>
             </div>
 
             <div className="flex flex-col flex-wrap items-center gap-3 mt-6 space-y-2">
-              {(Array.isArray(recommendation) ? recommendation : [recommendation]).map((crop, index) => (
+              {(Array.isArray(recommendation)
+                ? recommendation
+                : [recommendation]
+              ).map((crop, index) => (
                 <span
                   key={index}
                   className="px-10 py-2 rounded-full text-green-800 font-semibold shadow-sm border border-green-300 bg-white transform transition-transform duration-200 hover:scale-150"

@@ -9,18 +9,23 @@ const DiseaseDetection = () => {
   const [diagnosis, setDiagnosis] = useState<string | null>(null);
   const [treatment, setTreatment] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const uploadedImage = e.target.files?.[0];
     if (!uploadedImage) return;
 
     setImage(uploadedImage);
+    setPreviewUrl(URL.createObjectURL(uploadedImage));
     setDiagnosis(null);
     setTreatment(null);
-    setLoading(true);
+  };
 
+  const diagnoseDisease = async () => {
+    if (!image) return;
+    setLoading(true);
     const formData = new FormData();
-    formData.append("image", uploadedImage);
+    formData.append("image", image);
 
     try {
       const response = await fetch("http://localhost:8000/detect-disease", {
@@ -54,11 +59,29 @@ const DiseaseDetection = () => {
           setTreatment("Failed to fetch treatment recommendation.");
         }
       } else {
-        setDiagnosis("Error");
-        setTreatment("Model error. Could not diagnose.");
+        const fallbackForm = new FormData();
+        fallbackForm.append(
+          "message",
+          "Please identify the plant disease from this image. Add emojis and reply in a markdown format. Give detailed treatment or prevention tips."
+        );
+        fallbackForm.append("image", image);
+
+        const fallbackResponse = await fetch("http://localhost:8000/ask-ai", {
+          method: "POST",
+          body: fallbackForm,
+        });
+
+        const fallbackData = await fallbackResponse.json();
+
+        if (fallbackResponse.ok) {
+          setDiagnosis("AI-based diagnosis");
+          setTreatment(fallbackData.reply);
+        } else {
+          setDiagnosis("Unknown");
+          setTreatment("Could not retrieve any diagnosis. Please try again.");
+        }
       }
     } catch (error) {
-      console.error("Upload error:", error);
       setDiagnosis("Error");
       setTreatment("Server error. Please try again later.");
     }
@@ -67,72 +90,106 @@ const DiseaseDetection = () => {
   };
 
   return (
-    <div className="font-grotesk bg-gray-50 min-h-screen flex flex-col">
-      <div className="flex items-center justify-between bg-green-700 p-4 text-white rounded-b-2xl shadow-md">
-        <button onClick={() => navigate(-1)} className="text-white text-xl">
+    <div className="font-grotesk bg-gray-50 min-h-screen flex flex-col relative overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-br from-green-50 via-white to-green-100 z-0" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,_var(--tw-gradient-stops))] from-green-200/40 via-white/0 to-green-300/10 z-0" />
+      <div className="absolute top-0 left-0 w-full h-full bg-noise-pattern opacity-5 z-0 pointer-events-none" />
+
+      <header className="relative bg-green-700 py-6 px-4 sm:px-8 rounded-b-3xl shadow-lg z-10 flex justify-center w-full animate-fade-in">
+        <a
+          href="/home"
+          className="absolute left-2 top-1/2 -translate-y-1/2 text-white hover:text-green-200 transition"
+          title="Go Back"
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
-            strokeWidth={2}
+            strokeWidth={1.5}
             stroke="currentColor"
-            className="w-6 h-6"
+            className="w-7 h-7 md:w-8 md:h-8"
           >
-            <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M15.75 19.5L8.25 12l7.5-7.5"
+            />
           </svg>
-        </button>
-        <h1 className="text-2xl sm:text-3xl font-semibold text-center w-full -ml-6">
+        </a>
+        <h1 className="text-white text-3xl md:text-5xl font-bold text-center">
           Disease Detection
         </h1>
-      </div>
+      </header>
 
-      <main className="flex-grow py-10 w-full max-w-4xl mx-auto">
-        <div className="px-4 flex flex-col items-center">
-          <div className="bg-white p-8 rounded-lg mb-8 w-full text-center shadow-lg">
+      <main className="flex-grow py-10 w-full max-w-4xl mx-auto px-4 z-10 animate-fade-in">
+        <div className="flex flex-col items-center">
+          <div className=" p-8 mb-8 w-full text-center animate-zoom-in">
             <p className="text-3xl font-semibold text-gray-800 mb-4">
               Upload Your Plant Image
             </p>
 
             <input
               type="file"
-              onChange={handleImageUpload}
+              onChange={handleImageSelect}
               className="mb-4 p-2 border border-gray-300 rounded-lg"
-              aria-label="Upload plant image"
             />
 
             {image && (
-              <p className="text-gray-600 mb-4">
-                Image uploaded: {image.name}
-              </p>
+              <div className="flex flex-row items-center justify-center gap-4 mb-4 animate-fade-in delay-100">
+                {previewUrl && (
+                  <img
+                    src={previewUrl}
+                    alt="Uploaded preview"
+                    className="w-64 h-auto rounded-lg border border-gray-300 shadow animate-zoom-in"
+                  />
+                )}
+                <button
+                  onClick={diagnoseDisease}
+                  disabled={loading}
+                  className={`px-6 py-2 rounded-lg shadow transition-all animate-fade-in delay-200 ${
+                    loading
+                      ? "bg-green-600 opacity-60 cursor-not-allowed"
+                      : "bg-green-600 hover:bg-green-700"
+                  } text-white`}
+                >
+                  {loading ? "Diagnosing..." : "Diagnose Disease"}
+                </button>
+              </div>
             )}
 
-            {diagnosis && (
-              <div className="bg-yellow-100 p-6 rounded-lg shadow-lg w-full mb-6 text-left">
-                <h3 className="text-2xl font-bold text-gray-900 mb-3 text-center">
-                  Diagnosis:
-                </h3>
-                <p className="text-lg text-gray-800 mb-4 text-center">
-                  <strong>Disease:</strong> {diagnosis}
-                </p>
-                <h4 className="text-xl font-semibold text-gray-900 mt-4 mb-2 text-center">
-                  Treatment Recommendations:
-                </h4>
-                {loading ? (
-                  <div className="flex justify-center">
-                    <Grid size="60" speed="1" color="black" />
-                  </div>
-                ) : treatment ? (
-                  <div className="prose max-w-full">
-                    <ReactMarkdown>{treatment}</ReactMarkdown>
-                  </div>
-                ) : null}
+            {loading ? (
+              <div className="flex justify-center items-center min-h-[200px] py-6 animate-zoom-in">
+                <Grid size="60" speed="1" color="black" />
               </div>
+            ) : (
+              diagnosis && (
+                <div className="bg-yellow-100 p-6 rounded-lg shadow-lg w-full mb-6 text-left animate-fade-in delay-200">
+                  <h3 className="text-2xl font-bold text-gray-900 mb-3 text-center">
+                    Diagnosis:
+                  </h3>
+                  <p className="text-lg text-gray-800 mb-4 text-center">
+                    <strong>Disease:</strong> {diagnosis}
+                  </p>
+                  <h4 className="text-xl font-semibold text-gray-900 mt-4 mb-2 text-center">
+                    Treatment Recommendations:
+                  </h4>
+                  {treatment ? (
+                    <div className="prose max-w-full animate-fade-in delay-300">
+                      <ReactMarkdown>{treatment}</ReactMarkdown>
+                    </div>
+                  ) : (
+                    <p className="text-center text-gray-600">
+                      No treatment found.
+                    </p>
+                  )}
+                </div>
+              )
             )}
           </div>
         </div>
       </main>
 
-      <footer className="bg-gray-800 p-4 text-center text-white w-full">
+      <footer className="bg-gray-800 p-4 text-center text-white w-full z-10 rounded-t-3xl">
         <p>&copy; 2025 SowSmart. All rights reserved.</p>
       </footer>
     </div>
