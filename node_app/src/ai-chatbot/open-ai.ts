@@ -4,7 +4,7 @@ import OpenAI from "openai";
 import multer from "multer";
 import fs from "fs";
 import path from "path";
-const upload = multer({ dest: "../../../uploads" });
+const upload = multer({ dest: "/uploads" });
 export const aiModel = express.Router();
 
 const openai = new OpenAI({
