@@ -22,7 +22,7 @@ function linearRegression(x: number[], y: number[]): { slope: number; intercept:
   return { slope, intercept };
 }
 
-// 🌾 Crop Insights by Year (Line Chart)
+
 cropInsightsRouter.get("/crop-insights", (req, res) => {
   const crop = req.query.crop as string;
   const filePath = path.join(__dirname, "../dataset", "FAOSTAT_data_en_4-23-2025.csv");
@@ -79,7 +79,7 @@ cropInsightsRouter.get("/crop-insights", (req, res) => {
     });
 });
 
-// 🌾 Dynamic Crop Dropdown
+
 cropInsightsRouter.get("/crop-options", (req, res) => {
   const filePath = path.join(__dirname, "../dataset", "FAOSTAT_data_en_4-23-2025.csv");
   const cropSet = new Set<string>();
@@ -103,7 +103,7 @@ cropInsightsRouter.get("/crop-options", (req, res) => {
     });
 });
 
-// 🌾 Monthly Top Crops — Based on Producer Price (since Production Quantity missing)
+
 cropInsightsRouter.get("/monthly-top-crops", (req, res) => {
   const month = req.query.month as string;
   const filePath = path.join(__dirname, "../dataset", "FAOSTAT_data_en_4-23-2025.csv");
