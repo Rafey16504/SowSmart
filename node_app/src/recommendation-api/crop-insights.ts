@@ -1,4 +1,3 @@
-// ✅ BACKEND: crop-insights.ts
 import express from "express";
 import path from "path";
 import fs from "fs";
@@ -11,7 +10,10 @@ interface Entry {
   Value: number;
 }
 
-function linearRegression(x: number[], y: number[]): { slope: number; intercept: number } {
+function linearRegression(
+  x: number[],
+  y: number[]
+): { slope: number; intercept: number } {
   const n = x.length;
   const sumX = x.reduce((a, b) => a + b, 0);
   const sumY = y.reduce((a, b) => a + b, 0);
@@ -22,10 +24,13 @@ function linearRegression(x: number[], y: number[]): { slope: number; intercept:
   return { slope, intercept };
 }
 
-
 cropInsightsRouter.get("/crop-insights", (req, res) => {
   const crop = req.query.crop as string;
-  const filePath = path.join(__dirname, "../dataset", "FAOSTAT_data_en_4-23-2025.csv");
+  const filePath = path.join(
+    __dirname,
+    "../dataset",
+    "FAOSTAT_data_en_4-23-2025.csv"
+  );
 
   if (!crop) {
     res.status(400).json({ error: "Missing crop query parameter" });
@@ -52,25 +57,35 @@ cropInsightsRouter.get("/crop-insights", (req, res) => {
     .on("end", () => {
       const sorted = entries.sort((a, b) => a.Year - b.Year);
       if (sorted.length === 0) {
-        return res.status(404).json({ error: "No data found for selected crop" });
+        return res
+          .status(404)
+          .json({ error: "No data found for selected crop" });
       }
 
       const years = sorted.map((d) => d.Year);
       const prices = sorted.map((d) => d.Value);
 
       const avg = prices.reduce((a, b) => a + b, 0) / prices.length;
-      const volatility = Math.sqrt(prices.reduce((sum, val) => sum + (val - avg) ** 2, 0) / prices.length);
+      const volatility = Math.sqrt(
+        prices.reduce((sum, val) => sum + (val - avg) ** 2, 0) / prices.length
+      );
       const { slope, intercept } = linearRegression(years, prices);
 
-      const nextYears = [Math.max(...years) + 1, Math.max(...years) + 2, Math.max(...years) + 3];
-      const forecasts = nextYears.map((year) => Math.round(slope * year + intercept));
+      const nextYears = [
+        Math.max(...years) + 1,
+        Math.max(...years) + 2,
+        Math.max(...years) + 3,
+      ];
+      const forecasts = nextYears.map((year) =>
+        Math.round(slope * year + intercept)
+      );
 
       res.json({
         crop,
         chartData: sorted.map((d) => ({ year: d.Year, value: d.Value })),
         volatility: volatility.toFixed(2),
         forecast3Y: forecasts,
-        forecastLabels: nextYears
+        forecastLabels: nextYears,
       });
     })
     .on("error", (err) => {
@@ -79,9 +94,12 @@ cropInsightsRouter.get("/crop-insights", (req, res) => {
     });
 });
 
-
 cropInsightsRouter.get("/crop-options", (req, res) => {
-  const filePath = path.join(__dirname, "../dataset", "FAOSTAT_data_en_4-23-2025.csv");
+  const filePath = path.join(
+    __dirname,
+    "../dataset",
+    "FAOSTAT_data_en_4-23-2025.csv"
+  );
   const cropSet = new Set<string>();
 
   fs.createReadStream(filePath)
@@ -103,10 +121,13 @@ cropInsightsRouter.get("/crop-options", (req, res) => {
     });
 });
 
-
 cropInsightsRouter.get("/monthly-top-crops", (req, res) => {
   const month = req.query.month as string;
-  const filePath = path.join(__dirname, "../dataset", "FAOSTAT_data_en_4-23-2025.csv");
+  const filePath = path.join(
+    __dirname,
+    "../dataset",
+    "FAOSTAT_data_en_4-23-2025.csv"
+  );
   const cropTotals: Record<string, number> = {};
 
   fs.createReadStream(filePath)

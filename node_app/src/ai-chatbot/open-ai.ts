@@ -59,11 +59,10 @@ aiModel.post(
       }
 
       const completion = await openai.chat.completions.create({
-        model: "qwen/qwen2.5-vl-3b-instruct:free",
+        model: "meta-llama/llama-4-maverick:free",
         messages,
         max_tokens: 2000,
       });
-
       const reply = completion.choices?.[0]?.message?.content;
       if (!reply) {
         return res.status(500).json({ error: "No reply from AI model." });
