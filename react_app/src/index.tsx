@@ -7,7 +7,9 @@ import {
   useLocation,
   Navigate,
 } from "react-router-dom";
+
 import "./index.css";
+
 import App from "./App";
 import SignUp from "./SignUp";
 import AnimatedRoute from "./AnimatedRoute";
@@ -19,6 +21,7 @@ import WeeklyForecast from "./WeeklyForecast";
 import CropRecommendation from "./cropRecommendation";
 import AIChatPage from "./AIChat";
 import DiseaseDetection from "./disease_detection";
+import CropInsights from "./pages/CropInsights";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
@@ -29,70 +32,15 @@ const AnimatedRoutes = () => {
   return (
     <Routes location={location} key={location.pathname}>
       <Route path="/" element={<Navigate to="/signin" />} />
-      <Route
-        path="/signin"
-        element={
-          <AnimatedRoute>
-            <SignIn />
-          </AnimatedRoute>
-        }
-      />
-      <Route
-        path="/home"
-        element={
-          <AnimatedRoute>
-            <App />
-          </AnimatedRoute>
-        }
-      />
-      <Route
-        path="/ai-chat"
-        element={
-          <AnimatedRoute>
-            <AIChatPage />
-          </AnimatedRoute>
-        }
-      />
-      <Route
-        path="/weekly-forecast"
-        element={
-          <AnimatedRoute>
-            <WeeklyForecast />
-          </AnimatedRoute>
-        }
-      />
-      <Route
-        path="/crop-recommendation"
-        element={
-          <AnimatedRoute>
-            <CropRecommendation />
-          </AnimatedRoute>
-        }
-      />
-      <Route
-        path="/disease-detection"
-        element={
-          <AnimatedRoute>
-            <DiseaseDetection />
-          </AnimatedRoute>
-        }
-      />
-      <Route
-        path="/signup"
-        element={
-          <AnimatedRoute>
-            <SignUp />
-          </AnimatedRoute>
-        }
-      />
-      <Route
-        path="/input-details"
-        element={
-          <AnimatedRoute>
-            <InputDetails />
-          </AnimatedRoute>
-        }
-      />
+      <Route path="/signin" element={<AnimatedRoute><SignIn /></AnimatedRoute>} />
+      <Route path="/home" element={<AnimatedRoute><App /></AnimatedRoute>} />
+      <Route path="/ai-chat" element={<AnimatedRoute><AIChatPage /></AnimatedRoute>} />
+      <Route path="/weekly-forecast" element={<AnimatedRoute><WeeklyForecast /></AnimatedRoute>} />
+      <Route path="/crop-recommendation" element={<AnimatedRoute><CropRecommendation /></AnimatedRoute>} />
+      <Route path="/disease-detection" element={<AnimatedRoute><DiseaseDetection /></AnimatedRoute>} />
+      <Route path="/crop-insights" element={<AnimatedRoute><CropInsights /></AnimatedRoute>} />
+      <Route path="/signup" element={<AnimatedRoute><SignUp /></AnimatedRoute>} />
+      <Route path="/input-details" element={<AnimatedRoute><InputDetails /></AnimatedRoute>} />
       <Route path="/city-details" element={<CityDetails />} />
     </Routes>
   );
