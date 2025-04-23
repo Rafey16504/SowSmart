@@ -2,7 +2,6 @@ import express from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
 
-// Route imports
 import { loginFarmer } from "./folder-signin/login";
 import { farmerRegister } from "./farmer-signup/farmer-register";
 import { farmerLocation } from "./farmer-signup/farmer-location";
@@ -46,5 +45,5 @@ app.use("/", cropInsightsRouter);
 
 
 app.listen(port, () => {
-  console.log(`🌿 SowSmart backend running at: http://localhost:${port}`);
+  console.log(`SowSmart backend running at: http://localhost:${port}`);
 });
