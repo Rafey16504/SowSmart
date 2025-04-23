@@ -9,7 +9,7 @@ interface AskAIRequestBody {
 }
 const openai = new OpenAI({
   baseURL: 'https://openrouter.ai/api/v1',
-  apiKey: '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',
+  apiKey: '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',
   defaultHeaders: {
     'HTTP-Referer': 'https://sowsmart.com',
     'X-Title': 'SowSmart',
@@ -31,7 +31,7 @@ aiModel.post("/ask-ai", async (req: Request<{}, {}, AskAIRequestBody>, res: Resp
         { role: 'system', content: 'Always respond in markdown format and add emojis as well.' },
         { role: 'user', content: message }
       ],
-      max_tokens: 500,
+      max_tokens: 2000,
     });
     
   
