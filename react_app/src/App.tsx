@@ -79,7 +79,6 @@ function App() {
         setMessage("Failed to fetch weather data.");
       }
     } catch (err) {
-      console.error("Error fetching weather:", err);
       setMessage("Failed to fetch weather data.");
     }
   };
@@ -212,7 +211,6 @@ function App() {
               Get personalized crop suggestions based on your soil and weather.
             </p>
           </div>
-
 
           <div
             onClick={handleCropInsightsClick}
