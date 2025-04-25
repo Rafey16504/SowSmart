@@ -1,10 +1,8 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
 import { Grid } from "ldrs/react";
 
 const DiseaseDetection = () => {
-  const navigate = useNavigate();
   const [image, setImage] = useState<File | null>(null);
   const [diagnosis, setDiagnosis] = useState<string | null>(null);
   const [treatment, setTreatment] = useState<string | null>(null);

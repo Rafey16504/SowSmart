@@ -14,13 +14,13 @@ import App from "./App";
 import SignUp from "./SignUp";
 import AnimatedRoute from "./AnimatedRoute";
 import reportWebVitals from "./reportWebVitals";
-import InputDetails from "./inputDetails";
-import CityDetails from "./cityDetails";
+import InputDetails from "./InputDetails";
+import CityDetails from "./CityDetails";
 import SignIn from "./SignIn";
 import WeeklyForecast from "./WeeklyForecast";
-import CropRecommendation from "./cropRecommendation";
+import CropRecommendation from "./CropRecommendation";
 import AIChatPage from "./AIChat";
-import DiseaseDetection from "./disease_detection";
+import DiseaseDetection from "./DiseaseDetection";
 import CropInsights from "./CropInsights";
 
 const root = ReactDOM.createRoot(

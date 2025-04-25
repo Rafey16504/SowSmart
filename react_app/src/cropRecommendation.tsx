@@ -19,25 +19,19 @@ const CropRecommendation = () => {
   const [recommendation, setRecommendation] = useState<
     string[] | string | null
   >(null);
-  const [avgTemp, setAvgTemp] = useState<number | null>(null);
-  const [avgHumidity, setAvgHumidity] = useState<number | null>(null);
-  const [avgRainfall, setAvgRainfall] = useState<number | null>(null);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
   const [loading, setLoading] = useState<boolean>(false);
   const [submitted, setSubmitted] = useState<boolean>(false);
 
   const handleSoilSelection = (soil: string) => {
     setSoilType(soil);
     setRecommendation(null);
-    setErrorMessage(null);
+    setSubmitted(false);
   };
 
   const handleReset = () => {
     setSoilType("");
     setRecommendation(null);
-    setErrorMessage(null);
-    setSuccessMessage(null);
     setSubmitted(false);
   };
 
@@ -47,7 +41,6 @@ const CropRecommendation = () => {
     rainfall: number;
   } | null> => {
     if (!navigator.geolocation) {
-      setErrorMessage("Geolocation is not supported by your browser.");
       return null;
     }
 
@@ -73,12 +66,9 @@ const CropRecommendation = () => {
               rainfall: data.averages.rainfall,
             });
           } else {
-            setErrorMessage("Failed to fetch weather averages.");
             resolve(null);
           }
         } catch (error) {
-          console.error("Error fetching weather averages:", error);
-          setErrorMessage("Error fetching weather averages.");
           resolve(null);
         }
       });
@@ -87,12 +77,9 @@ const CropRecommendation = () => {
 
   const handleSubmit = async () => {
     if (!soilType) {
-      setErrorMessage("Please select soil type first.");
       return;
     }
 
-    setErrorMessage(null);
-    setSuccessMessage(null);
     setRecommendation(null);
     setSubmitted(true);
     setLoading(true);
@@ -103,10 +90,6 @@ const CropRecommendation = () => {
       setSubmitted(false);
       return;
     }
-
-    setAvgTemp(averages.temp);
-    setAvgHumidity(averages.humidity);
-    setAvgRainfall(averages.rainfall);
 
     const [phMin, phMax] = soilPhMap[soilType];
     const avgPh = (phMin + phMax) / 2;
@@ -125,10 +108,7 @@ const CropRecommendation = () => {
 
       const data = response.data;
       setRecommendation(data.recommendation || "No recommendation found.");
-      setSuccessMessage("Crop recommendation fetched successfully.");
     } catch (error) {
-      console.error("Error fetching crop recommendation:", error);
-      setErrorMessage("Error fetching crop recommendation.");
     } finally {
       setLoading(false);
     }
