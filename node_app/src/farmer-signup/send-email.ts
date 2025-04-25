@@ -14,7 +14,6 @@ verifyEmail.post("/send-email", async (req: Request, res: Response) => {
 
     return res.send({ message: verification_code });
   } catch (error) {
-    console.error("Error sending email:", error);
     return res.status(500).send("Could not send email!");
   }
 });

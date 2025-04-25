@@ -29,18 +29,13 @@ diseaseRouter.post(
       return;
     }
 
-    const imagePath = path.join(
-      __dirname,
-      "/uploads",
-      req.file.filename
-    );
+    const imagePath = path.join(__dirname, "/uploads", req.file.filename);
     const pythonScript = path.join(__dirname, "model_runner.py");
 
     execFile("python", [pythonScript, imagePath], (err, stdout, stderr) => {
       const cleanup = () => {
         fs.unlink(imagePath, (unlinkErr) => {
           if (unlinkErr) {
-            console.warn("Failed to delete uploaded image:", unlinkErr);
           }
         });
       };

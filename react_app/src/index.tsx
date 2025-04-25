@@ -21,7 +21,7 @@ import WeeklyForecast from "./WeeklyForecast";
 import CropRecommendation from "./cropRecommendation";
 import AIChatPage from "./AIChat";
 import DiseaseDetection from "./disease_detection";
-import CropInsights from "./pages/CropInsights";
+import CropInsights from "./CropInsights";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement

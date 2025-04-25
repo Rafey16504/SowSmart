@@ -22,8 +22,7 @@ cropRecommend.post("/crop-recommendation", async (req: Request, res: Response) =
 
   python.stderr.on("data", (data) => {
     errorOutput += data.toString();
-    console.error(`Python stderr: ${data.toString()}`);
-  });
+    });
 
   python.on("close", (code) => {
     if (code !== 0) {
@@ -37,7 +36,6 @@ cropRecommend.post("/crop-recommendation", async (req: Request, res: Response) =
       const result = JSON.parse(output);
       res.json({ recommendation: result });
     } catch (err) {
-      console.error("JSON parse error:", err);
       res.status(500).json({
         error: "Failed to parse Python output",
         rawOutput: output,

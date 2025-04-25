@@ -17,7 +17,6 @@ getFarmer.post("/get-farmer", async (req: Request, res: Response) => {
           res.status(200).json(result.rows[0]);
         }
       } catch (error) {
-        console.error(error);
         res.status(500).json({ error: "Database error" });
       }
 });

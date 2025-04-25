@@ -43,7 +43,6 @@ farmerRegister.post("/register-farmer", async (req: Request, res: Response) => {
 
     res.status(201).json({ success: true, farmerId });
   } catch (error) {
-    console.error("Database Insert Error:", error);
-    res.status(500).json({ error: "Database error" });
+    res.status(500).json({ error: "Registration failed." });
   }
 });

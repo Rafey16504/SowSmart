@@ -14,6 +14,6 @@ farmerLocation.post("/register-location", async (req: Request, res: Response) =>
   
       res.status(201).json(result.rows[0]);
     } catch (error) {
-      res.status(500).json({ error: error });
+      res.status(500).json({ error: "Could not update farmer location." });
     }
 });
