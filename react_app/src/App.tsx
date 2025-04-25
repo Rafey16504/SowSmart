@@ -27,10 +27,17 @@ interface Alert {
   end: number;
 }
 
+interface Recommendation {
+  crop: string;
+  currentPrice: number;
+  growth: string;
+}
+
 function App() {
   const [currentWeather, setCurrentWeather] = useState<Weather | null>(null);
   const [weeklyWeather, setWeeklyWeather] = useState<DailyForecast[]>([]);
   const [alerts, setAlerts] = useState<Alert[]>([]);
+  const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
   const [message, setMessage] = useState<string | null>(null);
   const navigate = useNavigate();
 
@@ -41,7 +48,7 @@ function App() {
           const { latitude, longitude } = position.coords;
           fetchWeather(latitude, longitude);
         },
-        (message) => {
+        () => {
           setMessage("Unable to retrieve location.");
         }
       );
@@ -57,9 +64,7 @@ function App() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ latitude, longitude }),
       });
-
       const data = await response.json();
-
       if (response.ok) {
         setCurrentWeather({
           temperature: data.current.temperature,
@@ -68,7 +73,6 @@ function App() {
           humidity: data.current.humidity,
           windSpeed: data.current.windSpeed,
         });
-
         setWeeklyWeather(data.weekly);
         setAlerts(data.alerts || []);
       } else {
@@ -86,7 +90,15 @@ function App() {
   };
 
   const handleCropRecommendationClick = () => {
-    navigate("/crop-recommendation");
+    navigate("/crop-recommendation", { state: { recommendations } });
+  };
+
+  const handleCropInsightsClick = () => {
+    navigate("/crop-insights");
+  };
+
+  const handleDiseaseDetectionClick = () => {
+    navigate("/disease-detection");
   };
 
   const getDayOfWeek = (dateString: string) => {
@@ -111,12 +123,10 @@ function App() {
       <div className="absolute inset-0 bg-gradient-to-br from-green-50 via-white to-green-100 z-0" />
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,_var(--tw-gradient-stops))] from-green-200/40 via-white/0 to-green-300/10 z-0" />
       <div className="absolute top-0 left-0 w-full h-full bg-noise-pattern opacity-5 z-0 pointer-events-none" />
-
       <header className="relative bg-green-700 shadow-lg py-6 px-4 sm:px-8 flex justify-between items-center z-10 rounded-b-3xl">
         <h1 className="text-4xl sm:text-5xl font-bold text-white drop-shadow-md animate-pulse">
           🌱 SowSmart
         </h1>
-
         <div className="flex items-center gap-4">
           <button
             onClick={() => navigate("/")}
@@ -152,7 +162,6 @@ function App() {
             Manage your smart farming solutions interactively and efficiently.
           </p>
         </section>
-
         <section className="grid grid-cols-1 md:grid-cols-3 gap-10 w-full max-w-6xl">
           <div
             onClick={handleWeatherContainerClick}
@@ -204,6 +213,19 @@ function App() {
             </p>
           </div>
 
+
+          <div
+            onClick={handleCropInsightsClick}
+            className="relative bg-gradient-to-br from-indigo-100 to-indigo-50 p-6 rounded-2xl shadow-lg hover:scale-105 hover:shadow-2xl transition-transform duration-300 cursor-pointer border border-indigo-300"
+          >
+            <h3 className="text-xl font-semibold text-gray-800 mb-3">
+              Crop Insights
+            </h3>
+            <p className="text-gray-700">
+              Analyze price history, forecast, and volatility per crop.
+            </p>
+          </div>
+
           <div
             onClick={() => navigate("/ai-chat")}
             className="relative bg-gradient-to-br from-purple-100 to-purple-50 p-6 rounded-2xl shadow-lg hover:scale-105 hover:shadow-2xl transition-transform duration-300 cursor-pointer border border-purple-300"
@@ -213,6 +235,18 @@ function App() {
             </h3>
             <p className="text-gray-700">
               Ask farming-related questions to our smart AI assistant.
+            </p>
+          </div>
+
+          <div
+            onClick={handleDiseaseDetectionClick}
+            className="relative bg-gradient-to-br from-red-100 to-red-50 p-6 rounded-2xl shadow-lg hover:scale-105 hover:shadow-2xl transition-transform duration-300 cursor-pointer border border-red-300"
+          >
+            <h3 className="text-xl font-semibold text-gray-800 mb-3">
+              Disease Detection
+            </h3>
+            <p className="text-gray-700">
+              Upload a leaf photo to detect plant diseases.
             </p>
           </div>
         </section>
@@ -233,7 +267,6 @@ function App() {
           </section>
         )}
       </main>
-
       <footer className="relative bg-gray-900 py-4 text-center text-white text-sm z-10 rounded-t-3xl">
         <p>&copy; {new Date().getFullYear()} SowSmart. All rights reserved.</p>
       </footer>

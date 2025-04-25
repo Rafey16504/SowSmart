@@ -1,1 +1,5 @@
 /node_modules
+/test_images
+/tests
+
+jest.config.js
