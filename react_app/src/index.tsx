@@ -11,17 +11,17 @@ import {
 import "./index.css";
 
 import App from "./App";
-import SignUp from "./SignUp";
+import SignUp from "./Sign-Up";
 import AnimatedRoute from "./AnimatedRoute";
 import reportWebVitals from "./reportWebVitals";
-import InputDetails from "./InputDetails";
-import CityDetails from "./CityDetails";
-import SignIn from "./SignIn";
-import WeeklyForecast from "./WeeklyForecast";
-import CropRecommendation from "./CropRecommendation";
-import AIChatPage from "./AIChat";
-import DiseaseDetection from "./DiseaseDetection";
-import CropInsights from "./CropInsights";
+import InputDetails from "./Input-Details";
+import CityDetails from "./City-Details";
+import SignIn from "./Sign-In";
+import WeeklyForecast from "./Weekly-Forecast";
+import CropRecommendation from "./Crop-Recommendation";
+import AIChatPage from "./AI-Chat";
+import DiseaseDetection from "./Disease-Detection";
+import CropInsights from "./Crop-Insights";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
