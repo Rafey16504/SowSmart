@@ -41,7 +41,7 @@ const AnimatedRoutes = () => {
       <Route path="/crop-insights" element={<AnimatedRoute><CropInsights /></AnimatedRoute>} />
       <Route path="/signup" element={<AnimatedRoute><SignUp /></AnimatedRoute>} />
       <Route path="/input-details" element={<AnimatedRoute><InputDetails /></AnimatedRoute>} />
-      <Route path="/city-details" element={<CityDetails />} />
+      <Route path="/city-details" element={<AnimatedRoute><InputDetails /></AnimatedRoute>} />
     </Routes>
   );
 };
