@@ -56,7 +56,6 @@ const InputDetails = () => {
         });
       }, 1000);
     } catch (error) {
-      console.error("Error registering farmer:", error);
       setErrorMessage("There was an error registering. Please try again.");
     }
   };
