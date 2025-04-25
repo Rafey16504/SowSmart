@@ -22,7 +22,7 @@ farmerRegister.post("/register-farmer", async (req: Request, res: Response) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const result = await pool.query(
-      `INSERT INTO farmers_info 
+      `INSERT INTO farmer 
         (name, gender, dob, phone_number, email, password, province, city, district) 
        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
        RETURNING id`,

@@ -217,9 +217,6 @@ export default function CropInsights() {
                     cx="50%"
                     cy="50%"
                     outerRadius="70%"
-                    label={({ name, value }) =>
-                      `${name}: ${value.toLocaleString()}`
-                    }
                   >
                     {topCrops.map((entry, index) => (
                       <Cell
@@ -228,6 +225,9 @@ export default function CropInsights() {
                       />
                     ))}
                   </Pie>
+                  <Tooltip
+                    formatter={(value: number, name: string) => [name]}
+                  />
                   <Legend />
                 </PieChart>
               </ResponsiveContainer>

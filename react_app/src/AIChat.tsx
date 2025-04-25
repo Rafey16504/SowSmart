@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
@@ -8,7 +7,6 @@ const AIChatPage = () => {
   const [reply, setReply] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const navigate = useNavigate();
 
   const handleSubmit = async () => {
     if (!message.trim()) return;
@@ -44,31 +42,30 @@ const AIChatPage = () => {
       <div className="absolute top-0 left-0 w-full h-full bg-noise-pattern opacity-5 z-0 pointer-events-none" />
 
       <header className="relative bg-green-700 py-6 px-4 sm:px-8 rounded-b-3xl shadow-lg z-10 flex justify-center w-full animate-fade-in">
-  <a
-    href="/home"
-    className="absolute left-2 top-1/2 -translate-y-1/2 text-white hover:text-green-200 transition"
-    title="Go Back"
-  >
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      fill="none"
-      viewBox="0 0 24 24"
-      strokeWidth={1.5}
-      stroke="currentColor"
-      className="w-7 h-7 md:w-8 md:h-8"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        d="M15.75 19.5L8.25 12l7.5-7.5"
-      />
-    </svg>
-  </a>
-  <h1 className="text-white text-3xl md:text-5xl font-bold text-center">
-    Disease Detection AI
-  </h1>
-</header>
-
+        <a
+          href="/home"
+          className="absolute left-2 top-1/2 -translate-y-1/2 text-white hover:text-green-200 transition"
+          title="Go Back"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="currentColor"
+            className="w-7 h-7 md:w-8 md:h-8"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M15.75 19.5L8.25 12l7.5-7.5"
+            />
+          </svg>
+        </a>
+        <h1 className="text-white text-3xl md:text-5xl font-bold text-center">
+          Disease Detection AI
+        </h1>
+      </header>
 
       <main className="relative flex-grow px-6 py-12 flex flex-col items-center justify-center z-10">
         <div className="w-full max-w-3xl bg-white/70 backdrop-blur-md border border-green-300 shadow-2xl rounded-3xl p-8 space-y-8">

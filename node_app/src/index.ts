@@ -13,7 +13,7 @@ import { getFarmer } from "./farmer-signup/check-existing";
 import { aiModel } from "./ai-chatbot/open-ai";
 import { diseaseRouter } from "./disease-api/disease_detection";
 import { cropInsightsRouter } from "./crop-insights/crop-insights";
-
+import {resetPass} from "./folder-signin/forget-pass";
 const app = express();
 const port = 8000;
 
@@ -42,6 +42,7 @@ app.use("/", cropRecommend);
 app.use("/", aiModel);
 app.use("/", diseaseRouter);
 app.use("/", cropInsightsRouter);
+app.use("/", resetPass);
 
 
 app.listen(port, () => {

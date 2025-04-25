@@ -14,13 +14,12 @@ const SignUp = () => {
 
   const checkExisting = async () => {
     try {
-      const response = await axios.post(
-        "http://localhost:8000/get-farmer",
-        {
-          email: email,
-        }
-      );
-      if(response){}
+      const response = await axios.post("http://localhost:8000/get-farmer", {
+        email: email,
+      });
+      if (response.data.success) {
+        return false;
+      }
       return true;
     } catch (error) {
       return false;
@@ -36,7 +35,7 @@ const SignUp = () => {
       setErrorMessage("Please enter a valid email!");
       return;
     }
-    if ((await checkExisting()) == true) {
+    if ((await checkExisting()) === true) {
       setErrorMessage("Email already exists. Please sign in!");
     } else {
       setSuccessMessage("Please wait while we send you a verification code!");
