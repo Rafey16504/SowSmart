@@ -39,7 +39,6 @@ weatherRouter.post("/get-weather", async (req: Request, res: Response) => {
       res.status(500).json({ message: "Failed to fetch weather data." });
     }
   } catch (error) {
-    console.error("Error fetching weather:", error);
     res.status(500).json({ message: "Failed to fetch weather data." });
   }
 });
@@ -105,7 +104,7 @@ weatherRouter.post(
         const avgTemp = totalTemp / upcomingDays.length;
         const avgHumidity = totalHumidity / upcomingDays.length;
         const avgRainfallPerDay = totalRain / upcomingDays.length;
-      
+
         const predictedSeasonalRainfall = avgRainfallPerDay * 30 * 3;
 
         const seasonalRainfall = parseFloat(
@@ -130,7 +129,6 @@ weatherRouter.post(
         res.status(500).json({ message: "Failed to fetch weather data." });
       }
     } catch (error) {
-      console.error("Error fetching weather:", error);
       res.status(500).json({ message: "Failed to fetch weather data." });
     }
   }

@@ -10,7 +10,7 @@ export const aiModel = express.Router();
 const openai = new OpenAI({
   baseURL: "https://openrouter.ai/api/v1",
   apiKey:
-    "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",
+    "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",
   defaultHeaders: {
     "HTTP-Referer": "https://sowsmart.com",
     "X-Title": "SowSmart",
@@ -70,7 +70,6 @@ aiModel.post(
 
       res.json({ reply });
     } catch (error) {
-      console.error("AI processing error:", error);
       res
         .status(500)
         .json({ error: "Something went wrong with AI processing." });

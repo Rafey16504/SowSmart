@@ -28,7 +28,6 @@ loginFarmer.post("/login-farmer", async (req: Request, res: Response) => {
     const { id, password: hashedPassword } = result.rows[0];
 
     if (!hashedPassword) {
-      console.error("Password from DB is missing for email:", email);
       return res.json({ success: false, error: "Stored password is missing." });
     }
 
@@ -40,7 +39,6 @@ loginFarmer.post("/login-farmer", async (req: Request, res: Response) => {
 
     res.status(200).json({ success: true, farmerId: id });
   } catch (error) {
-    console.error("Login Error:", error);
     res.status(500).json({ success: false, error: "Server error" });
   }
 });

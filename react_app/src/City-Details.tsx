@@ -53,7 +53,6 @@ const CityDetails = () => {
         navigate("/");
       }, 1500);
     } catch (error) {
-      console.error("Error registering farmer:", error);
       setErrorMessage(
         "There was an error registering the farmer. Please try again."
       );

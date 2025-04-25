@@ -64,7 +64,6 @@ const SignIn = () => {
         showTempMessage("error", "Incorrect email or password.");
       }
     } catch (error) {
-      console.error("Login error:", error);
       showTempMessage("error", "Login failed. Please try again.");
     }
   };
@@ -92,7 +91,6 @@ const SignIn = () => {
         showTempMessage("error", "Email not found.");
       }
     } catch (err) {
-      console.error("Send code error:", err);
       showTempMessage("error", "Failed to send verification code.");
     }
   };
