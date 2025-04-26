@@ -4,14 +4,16 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const pool = new Pool({
-  user: "postgres",
-  host: "localhost",
-  database: "SowSmart",
-  password: "12345_qwert",
-  port: 5432,
+  user: "postgres.mmvrhkjjttlrhlpnqyqd",
+  host: "aws-0-ap-south-1.pooler.supabase.com",
+  database: "postgres",
+  password: process.env.DB_PASSWORD,
+  port: 6543,
+  ssl: {
+    rejectUnauthorized: false,
+  },
 });
 
-pool
-  .connect()
+pool.connect();
 
 export default pool;
