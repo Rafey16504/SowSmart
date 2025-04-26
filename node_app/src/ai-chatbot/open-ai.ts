@@ -4,13 +4,15 @@ import OpenAI from "openai";
 import multer from "multer";
 import fs from "fs";
 import path from "path";
+import dotenv from "dotenv";
+
+dotenv.config();
 const upload = multer({ dest: "/uploads" });
 export const aiModel = express.Router();
 
 const openai = new OpenAI({
   baseURL: "https://openrouter.ai/api/v1",
-  apiKey:
-    "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",
+  apiKey:process.env.OPENAI_APIKEY,
   defaultHeaders: {
     "HTTP-Referer": "https://sowsmart.com",
     "X-Title": "SowSmart",

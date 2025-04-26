@@ -1,11 +1,13 @@
 const express = require("express");
 import { Request, Response } from "express";
-import axios from "axios";
+import dotenv from "dotenv";
+
+dotenv.config();
 export const weatherRouter = express.Router();
 
 weatherRouter.post("/get-weather", async (req: Request, res: Response) => {
   const { latitude, longitude } = req.body;
-  const API_KEY = "28652a142cb388fc42563c567782db56";
+  const API_KEY = process.env.OPENWEATHER_APIKEY;
 
   try {
     const response = await fetch(
@@ -47,7 +49,7 @@ weatherRouter.post(
   "/get-weather-average",
   async (req: Request, res: Response) => {
     const { latitude, longitude } = req.body;
-    const API_KEY = "28652a142cb388fc42563c567782db56";
+    const API_KEY = process.env.OPENWEATHER_APIKEY;
 
     try {
       const response = await fetch(
