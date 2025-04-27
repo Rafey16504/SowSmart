@@ -34,25 +34,51 @@ app.use((req, res, next) => {
 import fs from "fs";
 import path from "path";
 
-// Add this temporarily
 app.get("/list-files", (req, res) => {
-  const directoryPath = path.resolve("./"); // root of your project
+  const rootDirectoryPath = path.resolve("./");
+  const modelDirectoryPath = path.resolve("./model");
 
   function walk(dirPath: string) {
+    if (!fs.existsSync(dirPath)) {
+      return `Directory ${dirPath} does not exist.`;
+    }
     const files = fs.readdirSync(dirPath, { withFileTypes: true });
-    return files.map(file => ({
-      name: file.name,
-      isDirectory: file.isDirectory(),
-    }));
+    return files.map(file => {
+      const fullPath = path.join(dirPath, file.name);
+      const sizeInMB = !file.isDirectory()
+        ? (fs.statSync(fullPath).size / (1024 * 1024)).toFixed(2)
+        : null;
+      return {
+        name: file.name,
+        isDirectory: file.isDirectory(),
+        sizeMB: sizeInMB,
+      };
+    });
   }
 
-  const files = walk(directoryPath);
-  res.json(files);
+  const rootFiles = walk(rootDirectoryPath);
+  const modelFiles = walk(modelDirectoryPath);
+
+  res.json({
+    root: rootFiles,
+    modelFolder: modelFiles
+  });
 });
 
+app.get("/model-status", (req:any, res:any) => {
+  const modelPath = path.resolve(__dirname, "../../model/plant_disease_prediction_model.h5");
 
-app.get("/health", (req, res) => {
-  res.status(200).send("OK");
+  if (!fs.existsSync(modelPath)) {
+    return res.status(404).json({ status: "Model file not found." });
+  }
+
+  const stats = fs.statSync(modelPath);
+
+  res.json({
+    status: "Model file exists.",
+    sizeInMB: (stats.size / (1024 * 1024)).toFixed(2) + " MB",
+    lastModified: stats.mtime.toISOString(),
+  });
 });
 
 async function startServer() {

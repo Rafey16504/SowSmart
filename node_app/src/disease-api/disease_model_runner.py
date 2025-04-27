@@ -6,20 +6,37 @@ from tensorflow.keras.models import load_model
 from PIL import Image
 import os
 import requests
+from dotenv import load_dotenv
+
+load_dotenv()
 
 MODEL_PATH = os.path.join(os.path.dirname(__file__), "../../model/plant_disease_prediction_model.h5")
 MODEL_URL = os.getenv("DISEASEMODEL_URL")
 
 def download_model():
+    if not MODEL_URL:
+        raise ValueError("DISEASEMODEL_URL is not set in environment variables!")
+
     if not os.path.exists(MODEL_PATH):
         os.makedirs(os.path.dirname(MODEL_PATH), exist_ok=True)
         print("Downloading model...")
+
         response = requests.get(MODEL_URL, stream=True)
-        with open(MODEL_PATH, "wb") as f:
+        if response.status_code != 200:
+            raise Exception(f"Failed to download model. Status code: {response.status_code}")
+
+        temp_model_path = MODEL_PATH + ".tmp"
+
+        with open(temp_model_path, "wb") as f:
             for chunk in response.iter_content(chunk_size=8192):
                 if chunk:
                     f.write(chunk)
+
+        os.rename(temp_model_path, MODEL_PATH)
         print("Model download complete!")
+
+    if os.path.getsize(MODEL_PATH) < 10 * 1024 * 1024:
+        raise Exception("Downloaded model file is too small. Something went wrong!")
 
 download_model()
 
