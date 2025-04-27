@@ -80,8 +80,27 @@ const DiseaseDetection = () => {
         }
       }
     } catch (error) {
-      setDiagnosis("Error");
-      setTreatment("Server error. Please try again later.");
+      const fallbackForm = new FormData();
+        fallbackForm.append(
+          "message",
+          "Please identify the plant disease from this image. Add emojis and reply in a markdown format. Give detailed treatment or prevention tips."
+        );
+        fallbackForm.append("image", image);
+
+        const fallbackResponse = await fetch("https://sowsmart.onrender.com/ask-ai", {
+          method: "POST",
+          body: fallbackForm,
+        });
+
+        const fallbackData = await fallbackResponse.json();
+
+        if (fallbackResponse.ok) {
+          setDiagnosis("AI-based diagnosis");
+          setTreatment(fallbackData.reply);
+        } else {
+          setDiagnosis("Unknown");
+          setTreatment("Could not retrieve any diagnosis. Please try again.");
+        }
     }
 
     setLoading(false);
