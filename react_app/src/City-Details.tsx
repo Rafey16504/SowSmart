@@ -36,7 +36,7 @@ const CityDetails = () => {
     }
 
     try {
-      await axios.post("http://localhost:8000/register-farmer", {
+      await axios.post("https://sowsmart.onrender.com/register-farmer", {
         name,
         gender,
         dateOfBirth: dob,
