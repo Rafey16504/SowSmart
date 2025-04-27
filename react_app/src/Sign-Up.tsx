@@ -14,7 +14,7 @@ const SignUp = () => {
 
   const checkExisting = async () => {
     try {
-      const response = await axios.post("http://localhost:8000/get-farmer", {
+      const response = await axios.post("https://sowsmart.onrender.com/get-farmer", {
         email: email,
       });
       if (response.data.success) {
@@ -40,7 +40,7 @@ const SignUp = () => {
     } else {
       setSuccessMessage("Please wait while we send you a verification code!");
       try {
-        const { data } = await axios.post("http://localhost:8000/send-email/", {
+        const { data } = await axios.post("https://sowsmart.onrender.com/send-email/", {
           email,
         });
 

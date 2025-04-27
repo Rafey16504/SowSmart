@@ -54,7 +54,7 @@ export default function CropInsights() {
   );
 
   useEffect(() => {
-    axios.get("http://localhost:8000/crop-options").then((res) => {
+    axios.get("https://sowsmart.onrender.com/crop-options").then((res) => {
       setCropOptions(res.data.crops);
       setSelectedCrop(res.data.crops[0]);
     });
@@ -63,7 +63,7 @@ export default function CropInsights() {
   useEffect(() => {
     if (!selectedCrop) return;
     axios
-      .get("http://localhost:8000/crop-insights", {
+      .get("https://sowsmart.onrender.com/crop-insights", {
         params: { crop: selectedCrop },
       })
       .then((res) => {
@@ -83,7 +83,7 @@ export default function CropInsights() {
   useEffect(() => {
     if (!selectedMonth) return;
     axios
-      .get("http://localhost:8000/monthly-top-crops", {
+      .get("https://sowsmart.onrender.com/monthly-top-crops", {
         params: { month: selectedMonth },
       })
       .then((res) => setTopCrops(res.data.topCrops))

@@ -49,7 +49,7 @@ const CropRecommendation = () => {
         const { latitude, longitude } = position.coords;
         try {
           const response = await fetch(
-            "http://localhost:8000/get-weather-average",
+            "https://sowsmart.onrender.com/get-weather-average",
             {
               method: "POST",
               headers: { "Content-Type": "application/json" },
@@ -96,7 +96,7 @@ const CropRecommendation = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:8000/crop-recommendation",
+        "https://sowsmart.onrender.com/crop-recommendation",
         {
           soilType,
           temperature: averages.temp,

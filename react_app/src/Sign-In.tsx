@@ -49,7 +49,7 @@ const SignIn = () => {
     }
 
     try {
-      const response = await axios.post("http://localhost:8000/login-farmer", {
+      const response = await axios.post("https://sowsmart.onrender.com/login-farmer", {
         email,
         password,
       });
@@ -76,7 +76,7 @@ const SignIn = () => {
 
     try {
       showTempMessage("success", "Sending code to your email...");
-      const res = await axios.post("http://localhost:8000/send-reset-code", {
+      const res = await axios.post("https://sowsmart.onrender.com/send-reset-code", {
         email,
       });
       setCode("");
@@ -102,7 +102,7 @@ const SignIn = () => {
     }
 
     try {
-      const res = await axios.post("http://localhost:8000/reset-password", {
+      const res = await axios.post("https://sowsmart.onrender.com/reset-password", {
         email,
         code,
         newPassword,

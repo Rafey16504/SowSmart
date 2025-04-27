@@ -16,7 +16,7 @@ const AIChatPage = () => {
     setReply(null);
 
     try {
-      const res = await fetch("http://localhost:8000/ask-ai", {
+      const res = await fetch("https://sowsmart.onrender.com/ask-ai", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message }),
