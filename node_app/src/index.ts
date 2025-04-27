@@ -31,6 +31,26 @@ app.use((req, res, next) => {
   next();
 });
 
+import fs from "fs";
+import path from "path";
+
+// Add this temporarily
+app.get("/list-files", (req, res) => {
+  const directoryPath = path.resolve("./"); // root of your project
+
+  function walk(dirPath: string) {
+    const files = fs.readdirSync(dirPath, { withFileTypes: true });
+    return files.map(file => ({
+      name: file.name,
+      isDirectory: file.isDirectory(),
+    }));
+  }
+
+  const files = walk(directoryPath);
+  res.json(files);
+});
+
+
 app.get("/health", (req, res) => {
   res.status(200).send("OK");
 });
