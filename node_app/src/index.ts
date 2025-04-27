@@ -11,9 +11,11 @@ import { weatherRouter } from "./weather-api/openweather";
 import { cropRecommend } from "./recommendation-api/crop-recommendation";
 import { getFarmer } from "./farmer-signup/check-existing";
 import { aiModel } from "./ai-chatbot/open-ai";
-import { diseaseRouter } from "./disease-api/disease_detection";
+import { diseaseRouter } from "./disease-api/disease-detection";
 import { cropInsightsRouter } from "./crop-insights/crop-insights";
-import {resetPass} from "./folder-signin/forget-pass";
+import { resetPass } from "./folder-signin/forget-pass";
+import downloadModelIfNeeded from "./model-download/download-model";
+
 const app = express();
 const port = 8000;
 
@@ -22,14 +24,12 @@ app.use(bodyParser.json());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true, limit: "25mb" }));
 
-
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type,Authorization");
   next();
 });
-
 
 app.use("/", loginFarmer);
 app.use("/", getFarmer);
@@ -44,7 +44,12 @@ app.use("/", diseaseRouter);
 app.use("/", cropInsightsRouter);
 app.use("/", resetPass);
 
+async function startServer() {
+  await downloadModelIfNeeded();
 
-app.listen(port, () => {
-  console.log(`SowSmart backend running at: http://localhost:${port}`);
-});
+  app.listen(port, () => {
+    console.log(`SowSmart backend running at: http://localhost:${port}`);
+  });
+}
+
+startServer();

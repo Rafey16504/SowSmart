@@ -8,7 +8,7 @@ export const diseaseRouter = express.Router();
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    const uploadPath = path.join(__dirname, "/uploads");
+    const uploadPath = path.join(__dirname, "/");
     fs.mkdirSync(uploadPath, { recursive: true });
     cb(null, uploadPath);
   },
@@ -29,8 +29,8 @@ diseaseRouter.post(
       return;
     }
 
-    const imagePath = path.join(__dirname, "/uploads", req.file.filename);
-    const pythonScript = path.join(__dirname, "model_runner.py");
+    const imagePath = path.join(__dirname, "/", req.file.filename);
+    const pythonScript = path.join(__dirname, "disease_model_runner.py");
 
     execFile("python", [pythonScript, imagePath], (err, stdout, stderr) => {
       const cleanup = () => {
