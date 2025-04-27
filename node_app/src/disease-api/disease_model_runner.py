@@ -4,8 +4,26 @@ import numpy as np
 import tensorflow as tf
 from tensorflow.keras.models import load_model
 from PIL import Image
+import os
+import requests
 
-model = load_model("model/plant_disease_prediction_model.h5")
+MODEL_PATH = os.path.join(os.path.dirname(__file__), "../../model/plant_disease_prediction_model.h5")
+MODEL_URL = os.getenv("DISEASEMODEL_URL")
+
+def download_model():
+    if not os.path.exists(MODEL_PATH):
+        os.makedirs(os.path.dirname(MODEL_PATH), exist_ok=True)
+        print("Downloading model...")
+        response = requests.get(MODEL_URL, stream=True)
+        with open(MODEL_PATH, "wb") as f:
+            for chunk in response.iter_content(chunk_size=8192):
+                if chunk:
+                    f.write(chunk)
+        print("Model download complete!")
+
+download_model()
+
+model = load_model(MODEL_PATH)
 
 class_labels = [
     'Apple___Apple_scab',

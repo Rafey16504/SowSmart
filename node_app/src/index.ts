@@ -31,21 +31,25 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use("/", loginFarmer);
-app.use("/", getFarmer);
-app.use("/", farmerRegister);
-app.use("/", farmerLocation);
-app.use("/", verifyEmail);
-app.use("/", locationRouter);
-app.use("/", weatherRouter);
-app.use("/", cropRecommend);
-app.use("/", aiModel);
-app.use("/", diseaseRouter);
-app.use("/", cropInsightsRouter);
-app.use("/", resetPass);
+app.get("/health", (req, res) => {
+  res.status(200).send("OK");
+});
 
 async function startServer() {
   await downloadModelIfNeeded();
+
+  app.use("/", loginFarmer);
+  app.use("/", getFarmer);
+  app.use("/", farmerRegister);
+  app.use("/", farmerLocation);
+  app.use("/", verifyEmail);
+  app.use("/", locationRouter);
+  app.use("/", weatherRouter);
+  app.use("/", cropRecommend);
+  app.use("/", aiModel);
+  app.use("/", diseaseRouter);
+  app.use("/", cropInsightsRouter);
+  app.use("/", resetPass);
 
   app.listen(port, () => {
     console.log(`SowSmart backend running at port: ${port}`);
