@@ -5,7 +5,7 @@ import tensorflow as tf
 from tensorflow.keras.models import load_model
 from PIL import Image
 
-model = load_model("plant_disease_prediction_model.h5")
+model = load_model("model/plant_disease_prediction_model.h5")
 
 class_labels = [
     'Apple___Apple_scab',

@@ -7,12 +7,12 @@ import path from "path";
 import dotenv from "dotenv";
 
 dotenv.config();
-const upload = multer({ dest: "/uploads" });
+const upload = multer({ dest: "/" });
 export const aiModel = express.Router();
 
 const openai = new OpenAI({
   baseURL: "https://openrouter.ai/api/v1",
-  apiKey:process.env.OPENAI_APIKEY,
+  apiKey: process.env.OPENAI_APIKEY,
   defaultHeaders: {
     "HTTP-Referer": "https://sowsmart.com",
     "X-Title": "SowSmart",
