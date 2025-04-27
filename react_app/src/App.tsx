@@ -59,7 +59,7 @@ function App() {
 
   const fetchWeather = async (latitude: number, longitude: number) => {
     try {
-      const response = await fetch("http://localhost:8000/get-weather", {
+      const response = await fetch("https://sowsmart.onrender.com/get-weather", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ latitude, longitude }),

@@ -17,7 +17,7 @@ import { resetPass } from "./folder-signin/forget-pass";
 import downloadModelIfNeeded from "./model-download/download-model";
 
 const app = express();
-const port = 8000;
+const port = process.env.PORT || 8000;
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -48,7 +48,7 @@ async function startServer() {
   await downloadModelIfNeeded();
 
   app.listen(port, () => {
-    console.log(`SowSmart backend running at: http://localhost:${port}`);
+    console.log(`SowSmart backend running at port: ${port}`);
   });
 }
 
