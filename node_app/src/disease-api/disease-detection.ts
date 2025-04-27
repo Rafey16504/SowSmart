@@ -32,28 +32,44 @@ diseaseRouter.post(
     const imagePath = path.join(__dirname, "/", req.file.filename);
     const pythonScript = path.join(__dirname, "disease_model_runner.py");
 
-    execFile("python", [pythonScript, imagePath], (err, stdout, stderr) => {
-      const cleanup = () => {
-        fs.unlink(imagePath, (unlinkErr) => {
-          if (unlinkErr) {
-          }
-        });
-      };
+    const cleanup = () => {
+      fs.unlink(imagePath, (unlinkErr) => {
+        if (unlinkErr) {
+          console.error("Failed to delete temp image:", unlinkErr);
+        }
+      });
+    };
 
-      if (err) {
-        cleanup();
-        res.status(500).json({ error: "Model processing failed" });
-        return;
-      }
+    try {
+      execFile("python3", [pythonScript, imagePath], (err, stdout, stderr) => {
+        if (err) {
+          console.error("Error running Python script:", err);
+          console.error("Python stderr:", stderr);
+          cleanup();
+          res.status(500).json({ error: "Disease detection failed (Python error)" });
+          return;
+        }
 
-      try {
-        const result = JSON.parse(stdout);
-        res.json(result);
-      } catch (parseError) {
-        res.status(500).json({ error: "Invalid model output" });
-      } finally {
-        cleanup();
-      }
-    });
+        if (stderr) {
+          console.error("Python stderr output:", stderr);
+          // still continue unless fatal
+        }
+
+        try {
+          const result = JSON.parse(stdout);
+          res.json(result);
+        } catch (parseError) {
+          console.error("Failed to parse Python output:", parseError);
+          console.error("Raw output:", stdout);
+          res.status(500).json({ error: "Invalid model output format" });
+        } finally {
+          cleanup();
+        }
+      });
+    } catch (outerError) {
+      console.error("Unexpected error:", outerError);
+      cleanup();
+      res.status(500).json({ error: "Internal server error" });
+    }
   }
 );
