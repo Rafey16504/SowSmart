@@ -40,7 +40,7 @@ def download_model():
 
 download_model()
 
-model = load_model(MODEL_PATH)
+model = load_model("model/plant_disease_prediction_model.h5")
 
 class_labels = [
     'Apple___Apple_scab',
