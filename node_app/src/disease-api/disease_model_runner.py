@@ -6,45 +6,8 @@ from tensorflow.keras.models import load_model
 from PIL import Image
 import os
 import requests
-from dotenv import load_dotenv
 
-load_dotenv()
-
-MODEL_PATH = os.path.join(os.path.dirname(__file__), "../../model/plant_disease_prediction_model.h5")
-MODEL_URL = os.getenv("DISEASEMODEL_URL")
-
-def download_model():
-    if not os.path.exists(MODEL_PATH):
-        os.makedirs(os.path.dirname(MODEL_PATH), exist_ok=True)
-        print("Downloading model...")
-
-        response = requests.get(MODEL_URL, stream=True)
-        total_size = int(response.headers.get('content-length', 0))
-        downloaded_size = 0
-
-        if response.status_code != 200:
-            raise Exception(f"Failed to download model, status code: {response.status_code}")
-
-        with open(MODEL_PATH, "wb") as f:
-            for chunk in response.iter_content(chunk_size=8192):
-                if chunk:
-                    f.write(chunk)
-                    downloaded_size += len(chunk)
-
-        print(f"Download complete! Expected: {total_size} bytes, Downloaded: {downloaded_size} bytes.")
-
-        if total_size > 0 and downloaded_size != total_size:
-            os.remove(MODEL_PATH)  # remove the broken file
-            raise Exception("Downloaded model size does not match expected size. Download incomplete!")
-
-        print("Model verified successfully!")
-
-    else:
-        print("Model already exists.")
-        
-download_model()
-
-model = load_model("model/plant_disease_prediction_model.h5")
+model = load_model("plant_disease_prediction_model.h5")
 
 class_labels = [
     'Apple___Apple_scab',

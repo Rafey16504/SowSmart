@@ -1,10 +1,20 @@
 import express, { Request, Response } from "express";
 import multer from "multer";
 import path from "path";
-import { execFile } from "child_process";
 import fs from "fs";
+import AWS from "aws-sdk";
+import dotenv from "dotenv";
 
+dotenv.config();
 export const diseaseRouter = express.Router();
+
+AWS.config.update({
+  region: "ap-southeast-2",
+  accessKeyId: process.env.AWS_ACCESSSKEY,
+  secretAccessKey: process.env.AWS_SECRETACCESSKEY,
+});
+
+const sagemaker = new AWS.SageMakerRuntime();
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -30,46 +40,30 @@ diseaseRouter.post(
     }
 
     const imagePath = path.join(__dirname, "/", req.file.filename);
-    const pythonScript = path.join(__dirname, "disease_model_runner.py");
+    const imageBuffer = fs.readFileSync(imagePath);
 
-    const cleanup = () => {
-      fs.unlink(imagePath, (unlinkErr) => {
-        if (unlinkErr) {
-          console.error("Failed to delete temp image:", unlinkErr);
-        }
-      });
+    const endpointName = "your-endpoint-name";
+    const params = {
+      EndpointName: endpointName,
+      Body: imageBuffer,
+      ContentType: "image/jpeg",
+      Accept: "application/json",
     };
 
     try {
-      execFile("python3", [pythonScript, imagePath], (err, stdout, stderr) => {
-        if (err) {
-          console.error("Error running Python script:", err);
-          console.error("Python stderr:", stderr);
-          cleanup();
-          res.status(500).json({ error: "Disease detection failed (Python error)" });
-          return;
-        }
+      const data = await sagemaker.invokeEndpoint(params).promise();
+      
+      const result = JSON.parse(data.Body.toString("utf-8"));
+      res.json(result);
 
-        if (stderr) {
-          console.error("Python stderr output:", stderr);
-          // still continue unless fatal
-        }
-
-        try {
-          const result = JSON.parse(stdout);
-          res.json(result);
-        } catch (parseError) {
-          console.error("Failed to parse Python output:", parseError);
-          console.error("Raw output:", stdout);
-          res.status(500).json({ error: "Invalid model output format" });
-        } finally {
-          cleanup();
+      fs.unlink(imagePath, (unlinkErr) => {
+        if (unlinkErr) {
+          console.error("Error deleting uploaded image:", unlinkErr);
         }
       });
-    } catch (outerError) {
-      console.error("Unexpected error:", outerError);
-      cleanup();
-      res.status(500).json({ error: "Internal server error" });
+    } catch (err) {
+      console.error("Error invoking SageMaker endpoint:", err);
+      res.status(500).json({ error: "Model processing failed" });
     }
   }
 );
