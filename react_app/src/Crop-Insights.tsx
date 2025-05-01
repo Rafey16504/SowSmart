@@ -15,8 +15,7 @@ import {
 } from "recharts";
 import { useNavigate } from "react-router-dom";
 
-const BASE_URL = "https://sowsmart.onrender.com/"
-
+const BASE_URL = "https://sowsmart.onrender.com/";
 
 const shadesOfGreen = [
   "#2E8B57",
@@ -95,6 +94,9 @@ export default function CropInsights() {
       .catch(() => setTopCrops([]));
   }, [selectedMonth]);
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   const formatRs = (val: string | number) => {
     const num = typeof val === "string" ? parseFloat(val) : val;
     return isNaN(num) ? "N/A" : `Rs ${num}`;
