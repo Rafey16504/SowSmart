@@ -7,7 +7,12 @@ import path from "path";
 import dotenv from "dotenv";
 
 dotenv.config();
-const upload = multer({ dest: "/" });
+const uploadsDir = path.resolve(__dirname, "uploads");
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir);
+}
+const upload = multer({ dest: uploadsDir });
+
 export const aiModel = express.Router();
 
 const openai = new OpenAI({
@@ -63,7 +68,7 @@ aiModel.post(
       const completion = await openai.chat.completions.create({
         model: "meta-llama/llama-4-maverick:free",
         messages,
-        max_tokens: 2000,
+        max_tokens: 10000,
       });
       const reply = completion.choices?.[0]?.message?.content;
       if (!reply) {

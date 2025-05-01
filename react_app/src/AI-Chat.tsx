@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-
-const BASE_URL = "https://sowsmart.onrender.com/"
+import { useNavigate } from "react-router-dom";
+const BASE_URL = "https://sowsmart.onrender.com/";
 
 const AIChatPage = () => {
   const [message, setMessage] = useState("");
   const [reply, setReply] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
+  const navigate = useNavigate();
   const handleSubmit = async () => {
     if (!message.trim()) return;
 
@@ -77,7 +77,8 @@ const AIChatPage = () => {
         <img
           src="/SowSmart-logo-notext.png"
           alt="SowSmart Logo"
-          className="w-40 h-40 object-cover "
+          className="w-40 h-40 object-cover"
+          onClick={() => navigate("/home")}
         />
       </header>
 
