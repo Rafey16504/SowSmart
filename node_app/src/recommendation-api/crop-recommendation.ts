@@ -12,7 +12,7 @@ cropRecommend.post(
 
     const args = [ph, temperature, humidity, rainfall].map(String);
     const scriptPath = path.join(__dirname, "crop_recommendation_model.py");
-    const python = spawn("python", [scriptPath, ...args]);
+    const python = spawn("python3", [scriptPath, ...args]);
 
     let output = "";
     let errorOutput = "";
