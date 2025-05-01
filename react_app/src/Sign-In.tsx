@@ -50,7 +50,7 @@ const SignIn = () => {
     }
 
     try {
-      const response = await axios.post(`${BASE_URL}/login-farmer`, {
+      const response = await axios.post(`${BASE_URL}login-farmer`, {
         email,
         password,
       });
@@ -77,7 +77,7 @@ const SignIn = () => {
 
     try {
       showTempMessage("success", "Sending code to your email...");
-      const res = await axios.post(`${BASE_URL}/send-reset-code`, {
+      const res = await axios.post(`${BASE_URL}send-reset-code`, {
         email,
       });
       setCode("");
@@ -103,7 +103,7 @@ const SignIn = () => {
     }
 
     try {
-      const res = await axios.post(`${BASE_URL}/reset-password`, {
+      const res = await axios.post(`${BASE_URL}reset-password`, {
         email,
         code,
         newPassword,

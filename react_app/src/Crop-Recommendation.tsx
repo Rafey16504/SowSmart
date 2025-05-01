@@ -52,7 +52,7 @@ const CropRecommendation = () => {
         const { latitude, longitude } = position.coords;
         try {
           const response = await fetch(
-            `${BASE_URL}/get-weather-average`,
+            `${BASE_URL}get-weather-average`,
             {
               method: "POST",
               headers: { "Content-Type": "application/json" },
@@ -99,7 +99,7 @@ const CropRecommendation = () => {
 
     try {
       const response = await axios.post(
-        `${BASE_URL}/crop-recommendation`,
+        `${BASE_URL}crop-recommendation`,
         {
           soilType,
           temperature: averages.temp,
