@@ -1,16 +1,21 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import ReactMarkdown from "react-markdown";
-import { Grid } from "ldrs/react";
+import { Helix } from "ldrs/react";
+import { useNavigate } from "react-router-dom";
 
-const BASE_URL = "https://sowsmart.onrender.com/"
-
+const BASE_URL = "https://sowsmart.onrender.com/";
 
 const DiseaseDetection = () => {
   const [image, setImage] = useState<File | null>(null);
   const [diagnosis, setDiagnosis] = useState<string | null>(null);
   const [treatment, setTreatment] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
+  const [loadingStep, setLoadingStep] = useState<
+    "precheck" | "diagnosis" | null
+  >(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const navigate = useNavigate();
+  const resultRef = useRef<HTMLDivElement | null>(null);
 
   const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const uploadedImage = e.target.files?.[0];
@@ -25,10 +30,49 @@ const DiseaseDetection = () => {
   const diagnoseDisease = async () => {
     if (!image) return;
     setLoading(true);
-    const formData = new FormData();
-    formData.append("image", image);
+    setLoadingStep("precheck");
+    setDiagnosis(null);
+    setTreatment(null);
+
+    const preCheckForm = new FormData();
+    preCheckForm.append(
+      "message",
+      "Please analyze this image and tell me if it is of a plant or a plant part. Also, is the plant healthy or unhealthy (only say its unhealthy if you see clear visible spots or infection, ignore very small details like holes and tears, also dont focus on discoloration a lot unless its clearly visible)? Reply concisely as 'plant: yes/no. health: healthy/unhealthy.'"
+    );
+    preCheckForm.append("image", image);
 
     try {
+      const preCheckResponse = await fetch(`${BASE_URL}ask-ai`, {
+        method: "POST",
+        body: preCheckForm,
+      });
+
+      const preCheckData = await preCheckResponse.json();
+      const replyText = preCheckData.reply.toLowerCase();
+
+      if (!replyText.includes("plant: yes")) {
+        setDiagnosis("Not a plant image");
+        setTreatment("Please upload a valid image of a plant or plant part.");
+        setLoading(false);
+        setLoadingStep(null);
+        return;
+      }
+
+      if (!replyText.includes("unhealthy")) {
+        setDiagnosis("Healthy Plant");
+        setTreatment(
+          "This plant appears to be healthy. No treatment is needed."
+        );
+        setLoading(false);
+        setLoadingStep(null);
+        return;
+      }
+
+      setLoadingStep("diagnosis");
+
+      const formData = new FormData();
+      formData.append("image", image);
+
       const response = await fetch(`${BASE_URL}detect-disease`, {
         method: "POST",
         body: formData,
@@ -63,7 +107,7 @@ const DiseaseDetection = () => {
         const fallbackForm = new FormData();
         fallbackForm.append(
           "message",
-          "Please identify the plant disease from this image. Add emojis and reply in a markdown format. Give detailed treatment or prevention tips."
+          "Please identify the plant disease from this image. Add emojis and reply in markdown. Provide detailed treatment or prevention tips."
         );
         fallbackForm.append("image", image);
 
@@ -82,24 +126,31 @@ const DiseaseDetection = () => {
           setTreatment("Could not retrieve any diagnosis. Please try again.");
         }
       }
+
+      setTimeout(() => {
+        if (resultRef.current) {
+          resultRef.current.scrollIntoView({ behavior: "smooth" });
+        }
+      }, 300);
     } catch (error) {
-          setDiagnosis("Error while getting diagnosis.");
-          setTreatment("Could not retrieve any diagnosis. Please try again after some time.");
+      setDiagnosis("Could not diagnose.");
+      setTreatment("Today's limit has been reached. Please try again later.");
     }
 
     setLoading(false);
+    setLoadingStep(null);
   };
 
   return (
     <div className="font-grotesk relative min-h-screen flex flex-col overflow-hidden bg-[#FFE0CC]">
-    <div className="absolute inset-0 bg-gradient-to-br from-green-200 via-white to-green-200 z-0" />
-    <div className="absolute inset-0 from-green-400/40 via-white/0 to-green-600/10 z-0" />
-    <div className="absolute top-0 left-0 w-full h-full bg-noise-pattern opacity-5 z-0 pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-br from-green-200 via-white to-green-200 z-0" />
+      <div className="absolute inset-0 from-green-400/40 via-white/0 to-green-600/10 z-0" />
+      <div className="absolute top-0 left-0 w-full h-full bg-noise-pattern opacity-5 z-0 pointer-events-none" />
 
-    <header className="relative  px-4 sm:px-8 flex justify-center w-full animate-fade-in">
+      <header className="relative px-4 sm:px-8 flex justify-center w-full animate-fade-in">
         <a
           href="/home"
-          className="absolute left-2 top-1/2 -translate-y-1/2 text-black bg-green-300/80 rounded-full p-1  hover:text-green-200 transition"
+          className="absolute left-2 top-1/2 -translate-y-1/2 text-black bg-green-300/80 rounded-full p-1 hover:text-green-200 transition"
           title="Go Back"
         >
           <svg
@@ -121,27 +172,32 @@ const DiseaseDetection = () => {
           src="/SowSmart-logo-notext.png"
           alt="SowSmart Logo"
           className="w-40 h-40 object-cover"
+          onClick={() => navigate("/home")}
         />
       </header>
 
       <main className="flex-grow w-full max-w-4xl mx-auto px-4 z-10 animate-fade-in">
-      <h1 className="text-black text-5xl md:text-5xl font-bold text-center underline animate-slide-up">
+        <h1 className="text-black text-5xl md:text-5xl font-bold text-center underline animate-slide-up">
           Disease Detection
         </h1>
         <div className="flex flex-col items-center">
-          <div className=" p-8 mb-8 w-full text-center animate-zoom-in">
-            <p className="text-3xl font-semibold text-gray-800 mb-4">
-              Upload Your Plant Image
-            </p>
+          <div className="p-8 mb-8 w-full text-center animate-zoom-in">
+            {!loading && (
+              <>
+                <p className="text-3xl font-semibold text-gray-800 mb-4">
+                  Upload Your Plant Image
+                </p>
 
-            <input
-              type="file"
-              onChange={handleImageSelect}
-              className="mb-4 p-2 border border-gray-300 rounded-lg"
-            />
+                <input
+                  type="file"
+                  onChange={handleImageSelect}
+                  className="mb-4 p-2 border border-gray-300 rounded-lg"
+                />
+              </>
+            )}
 
-            {image && (
-              <div className="flex flex-row items-center justify-center gap-4 mb-4 animate-fade-in delay-100">
+            {image && !loading && (
+              <div className="flex flex-col items-center justify-center gap-4 mb-4 animate-fade-in delay-100">
                 {previewUrl && (
                   <img
                     src={previewUrl}
@@ -164,42 +220,54 @@ const DiseaseDetection = () => {
             )}
 
             {loading ? (
-              <div className="flex justify-center items-center min-h-[200px] py-6 animate-zoom-in">
-                <Grid size="60" speed="1" color="black" />
+              <div className="flex flex-col justify-center items-center min-h-[200px] py-6 animate-zoom-in">
+                <Helix size="60" speed="1" color="black" />
+                <p className="mt-4 text-lg text-gray-700 animate-pulse text-center">
+                  {loadingStep === "precheck"
+                    ? "Checking image content... 🌱"
+                    : "Diagnosing plant disease... 🧪"}
+                </p>
               </div>
             ) : (
               diagnosis && (
-                <div className="bg-green-100 p-6 rounded-lg shadow-lg w-full mb-6 text-left animate-fade-in delay-200">
-                  <h3 className="text-2xl font-bold text-gray-900 mb-3 text-center">
-                    Diagnosis:
-                  </h3>
-                  <p className="text-lg text-gray-800 mb-4 text-center">
-                    <strong>Disease:</strong> {diagnosis}
-                  </p>
-                  <h4 className="text-xl font-semibold text-gray-900 mt-4 mb-2 text-center">
-                    Treatment Recommendations:
-                  </h4>
-                  {treatment ? (
-                    <div className="prose max-w-full animate-fade-in delay-300">
-                      <ReactMarkdown>{treatment}</ReactMarkdown>
-                    </div>
-                  ) : (
-                    <p className="text-center text-gray-600">
-                      No treatment found.
+                <div className="w-full max-w-3xl mx-auto">
+                  <div
+                    ref={resultRef}
+                    className=" rounded-lg text-left animate-fade-in delay-200"
+                  >
+                    <h3 className="text-2xl font-bold text-gray-900 mb-3 text-center">
+                      Diagnosis:
+                    </h3>
+                    <p className="text-lg text-gray-800 mb-4 text-center">
+                      <strong>Disease:</strong> {diagnosis}
                     </p>
-                  )}
+                    <h4 className="text-xl font-semibold text-gray-900 mt-4 mb-2 text-center">
+                      Treatment Recommendations:
+                    </h4>
+                    {treatment ? (
+                      <div className="prose max-w-full animate-fade-in delay-300">
+                        <ReactMarkdown>{treatment}</ReactMarkdown>
+                      </div>
+                    ) : (
+                      <p className="text-center text-gray-600">
+                        No treatment found.
+                      </p>
+                    )}
+                  </div>
                 </div>
               )
             )}
           </div>
         </div>
-        <p className="text-gray-700 text-lg opacity-60">
-          Note: AI responses are subject to change, and may not always be
-          accurate or reliable. Always seek professional advice before making
-          decisions based on AI-generated information.{" "}
-        </p>
       </main>
 
+      <div className="w-full text-left px-6 pb-2 animate-fade-in z-10">
+        <p className="text-gray-700 text-lg opacity-60 max-w-2xl mx-auto">
+          Note: AI responses are subject to change, and may not always be
+          accurate or reliable. Always seek professional advice before making
+          decisions based on AI-generated information.
+        </p>
+      </div>
       <footer className="p-4 text-center text-black w-full z-10">
         <p>&copy; 2025 SowSmart. All rights reserved.</p>
       </footer>

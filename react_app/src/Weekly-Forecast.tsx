@@ -1,5 +1,6 @@
 import { FC, useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 interface DailyForecast {
   date: string;
@@ -13,8 +14,7 @@ interface DailyForecast {
 const WeeklyForecast: FC = () => {
   const location = useLocation();
   const [weeklyWeather, setWeeklyWeather] = useState<DailyForecast[]>([]);
-
-
+  const navigate = useNavigate();
   
   useEffect(() => {
     if (location.state && location.state.weeklyWeather) {
@@ -67,6 +67,7 @@ const WeeklyForecast: FC = () => {
           src="/SowSmart-logo-notext.png"
           alt="SowSmart Logo"
           className="w-40 h-40 object-cover"
+          onClick={() => navigate("/home")}
         />
       </header>
 

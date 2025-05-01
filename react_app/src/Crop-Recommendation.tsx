@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import { Quantum } from "ldrs/react";
 import "ldrs/react/Quantum.css";
 
-const BASE_URL = "https://sowsmart.onrender.com/"
-
+const BASE_URL = "https://sowsmart.onrender.com/";
 
 const soilPhMap: Record<string, [number, number]> = {
   sandy: [5.5, 6.0],
@@ -25,6 +25,7 @@ const CropRecommendation = () => {
 
   const [loading, setLoading] = useState<boolean>(false);
   const [submitted, setSubmitted] = useState<boolean>(false);
+  const navigate = useNavigate();
 
   const handleSoilSelection = (soil: string) => {
     setSoilType(soil);
@@ -51,14 +52,11 @@ const CropRecommendation = () => {
       navigator.geolocation.getCurrentPosition(async (position) => {
         const { latitude, longitude } = position.coords;
         try {
-          const response = await fetch(
-            `${BASE_URL}get-weather-average`,
-            {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ latitude, longitude }),
-            }
-          );
+          const response = await fetch(`${BASE_URL}get-weather-average`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ latitude, longitude }),
+          });
 
           const data = await response.json();
 
@@ -98,16 +96,13 @@ const CropRecommendation = () => {
     const avgPh = (phMin + phMax) / 2;
 
     try {
-      const response = await axios.post(
-        `${BASE_URL}crop-recommendation`,
-        {
-          soilType,
-          temperature: averages.temp,
-          humidity: averages.humidity,
-          rainfall: averages.rainfall,
-          ph: avgPh,
-        }
-      );
+      const response = await axios.post(`${BASE_URL}crop-recommendation`, {
+        soilType,
+        temperature: averages.temp,
+        humidity: averages.humidity,
+        rainfall: averages.rainfall,
+        ph: avgPh,
+      });
 
       const data = response.data;
       setRecommendation(data.recommendation || "No recommendation found.");
@@ -116,6 +111,10 @@ const CropRecommendation = () => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   return (
     <div className="font-grotesk relative min-h-screen flex flex-col overflow-hidden bg-[#FFE0CC]">
@@ -148,10 +147,11 @@ const CropRecommendation = () => {
           src="/SowSmart-logo-notext.png"
           alt="SowSmart Logo"
           className="w-40 h-40 object-cover"
+          onClick={() => navigate("/home")}
         />
       </header>
 
-      <main className="flex-grow py-10 w-full max-w-5xl px-4 relative z-10 -mt-16 space-y-6">
+      <main className="flex-grow py-10 max-w-5xl relative z-10 -mt-16 space-y-6">
         <h1 className="text-black text-5xl md:text-5xl font-bold text-center underline animate-slide-up">
           Crop Recommendation
         </h1>

@@ -2,8 +2,7 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 
-const BASE_URL = "https://sowsmart.onrender.com/"
-
+const BASE_URL = "https://sowsmart.onrender.com/";
 
 const SignUp = () => {
   const [email, setEmail] = useState("");
@@ -149,7 +148,9 @@ const SignUp = () => {
         </p>
 
         {errorMessage && (
-          <div className="message font-grotesk text-red-600">{errorMessage}</div>
+          <div className="message font-grotesk text-red-600">
+            {errorMessage}
+          </div>
         )}
         {successMessage && (
           <div className="message font-grotesk text-green-600">

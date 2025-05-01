@@ -13,6 +13,7 @@ import {
   Cell,
   Legend,
 } from "recharts";
+import { useNavigate } from "react-router-dom";
 
 const BASE_URL = "https://sowsmart.onrender.com/"
 
@@ -55,6 +56,7 @@ export default function CropInsights() {
   const [topCrops, setTopCrops] = useState<{ name: string; value: number }[]>(
     []
   );
+  const navigate = useNavigate();
 
   useEffect(() => {
     axios.get(`${BASE_URL}crop-options`).then((res) => {
@@ -129,6 +131,7 @@ export default function CropInsights() {
           src="/SowSmart-logo-notext.png"
           alt="SowSmart Logo"
           className="w-40 h-40 object-cover"
+          onClick={() => navigate("/home")}
         />
       </header>
 
