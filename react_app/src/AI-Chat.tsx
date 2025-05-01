@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import dotenv from "dotenv";
 
-dotenv.config();
+const BASE_URL = "https://sowsmart.onrender.com/"
+
 const AIChatPage = () => {
   const [message, setMessage] = useState("");
   const [reply, setReply] = useState<string | null>(null);
@@ -18,7 +18,7 @@ const AIChatPage = () => {
     setReply(null);
 
     try {
-      const res = await fetch(`${process.env.BASE_URL}/ask-ai`, {
+      const res = await fetch(`${BASE_URL}/ask-ai`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message }),

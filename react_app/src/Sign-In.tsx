@@ -3,10 +3,8 @@ import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import { Helix } from "ldrs/react";
 import "ldrs/react/Helix.css";
-import dotenv from "dotenv";
 
-dotenv.config();
-
+const BASE_URL = "https://sowsmart.onrender.com/"
 const SignIn = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -52,7 +50,7 @@ const SignIn = () => {
     }
 
     try {
-      const response = await axios.post(`${process.env.BASE_URL}/login-farmer`, {
+      const response = await axios.post(`${BASE_URL}/login-farmer`, {
         email,
         password,
       });
@@ -79,7 +77,7 @@ const SignIn = () => {
 
     try {
       showTempMessage("success", "Sending code to your email...");
-      const res = await axios.post(`${process.env.BASE_URL}/send-reset-code`, {
+      const res = await axios.post(`${BASE_URL}/send-reset-code`, {
         email,
       });
       setCode("");
@@ -105,7 +103,7 @@ const SignIn = () => {
     }
 
     try {
-      const res = await axios.post(`${process.env.BASE_URL}/reset-password`, {
+      const res = await axios.post(`${BASE_URL}/reset-password`, {
         email,
         code,
         newPassword,

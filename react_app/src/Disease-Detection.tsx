@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import ReactMarkdown from "react-markdown";
 import { Grid } from "ldrs/react";
-import dotenv from "dotenv";
 
-dotenv.config();
+const BASE_URL = "https://sowsmart.onrender.com/"
+
 
 const DiseaseDetection = () => {
   const [image, setImage] = useState<File | null>(null);
@@ -29,7 +29,7 @@ const DiseaseDetection = () => {
     formData.append("image", image);
 
     try {
-      const response = await fetch(`${process.env.BASE_URL}/detect-disease`, {
+      const response = await fetch(`${BASE_URL}/detect-disease`, {
         method: "POST",
         body: formData,
       });
@@ -44,7 +44,7 @@ const DiseaseDetection = () => {
 
         setDiagnosis(readableName);
 
-        const chatbotResponse = await fetch(`${process.env.BASE_URL}/ask-ai`, {
+        const chatbotResponse = await fetch(`${BASE_URL}/ask-ai`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -67,7 +67,7 @@ const DiseaseDetection = () => {
         );
         fallbackForm.append("image", image);
 
-        const fallbackResponse = await fetch(`${process.env.BASE_URL}/ask-ai`, {
+        const fallbackResponse = await fetch(`${BASE_URL}/ask-ai`, {
           method: "POST",
           body: fallbackForm,
         });
