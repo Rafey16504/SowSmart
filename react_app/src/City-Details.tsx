@@ -50,7 +50,7 @@ const CityDetails = () => {
     }
 
     try {
-      await axios.post(`${BASE_URL}/register-farmer`, {
+      await axios.post(`${BASE_URL}register-farmer`, {
         name,
         gender,
         dateOfBirth: dob,

@@ -57,7 +57,7 @@ export default function CropInsights() {
   );
 
   useEffect(() => {
-    axios.get(`${BASE_URL}/crop-options`).then((res) => {
+    axios.get(`${BASE_URL}crop-options`).then((res) => {
       setCropOptions(res.data.crops);
       setSelectedCrop(res.data.crops[0]);
     });
@@ -66,7 +66,7 @@ export default function CropInsights() {
   useEffect(() => {
     if (!selectedCrop) return;
     axios
-      .get(`${BASE_URL}/crop-insights`, {
+      .get(`${BASE_URL}crop-insights`, {
         params: { crop: selectedCrop },
       })
       .then((res) => {
@@ -86,7 +86,7 @@ export default function CropInsights() {
   useEffect(() => {
     if (!selectedMonth) return;
     axios
-      .get(`${BASE_URL}/monthly-top-crops`, {
+      .get(`${BASE_URL}monthly-top-crops`, {
         params: { month: selectedMonth },
       })
       .then((res) => setTopCrops(res.data.topCrops))

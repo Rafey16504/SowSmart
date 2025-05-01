@@ -18,7 +18,7 @@ const AIChatPage = () => {
     setReply(null);
 
     try {
-      const res = await fetch(`${BASE_URL}/ask-ai`, {
+      const res = await fetch(`${BASE_URL}ask-ai`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message }),
