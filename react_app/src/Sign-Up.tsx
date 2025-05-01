@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const SignUp = () => {
   const [email, setEmail] = useState("");
@@ -14,7 +17,7 @@ const SignUp = () => {
 
   const checkExisting = async () => {
     try {
-      const response = await axios.post("https://sowsmart.onrender.com/get-farmer", {
+      const response = await axios.post(`${process.env.BASE_URL}/get-farmer`, {
         email: email,
       });
       if (response.data.success) {
@@ -25,22 +28,24 @@ const SignUp = () => {
       return false;
     }
   };
+
   const handleEmailSubmit = async () => {
     if (!email) {
       setErrorMessage("Please enter your email!");
       return;
     }
 
-    if (!email.includes("@") || !email.includes(".com")) {
+    if (!email.includes("@")) {
       setErrorMessage("Please enter a valid email!");
       return;
     }
+
     if ((await checkExisting()) === true) {
       setErrorMessage("Email already exists. Please sign in!");
     } else {
       setSuccessMessage("Please wait while we send you a verification code!");
       try {
-        const { data } = await axios.post("https://sowsmart.onrender.com/send-email/", {
+        const { data } = await axios.post(`${process.env.BASE_URL}/send-email/`, {
           email,
         });
 
@@ -52,9 +57,7 @@ const SignUp = () => {
       }
     }
   };
-  setTimeout(() => {
-    setErrorMessage("");
-  }, 1500);
+
   const handleVerifyCode = () => {
     if (userInputCode !== verificationCode) {
       setErrorMessage("Invalid code. Please try again.");
@@ -66,6 +69,21 @@ const SignUp = () => {
       navigate("/input-details", { state: { email } });
     }, 1000);
   };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      if (isVerificationVisible) {
+        handleVerifyCode();
+      } else {
+        handleEmailSubmit();
+      }
+    }
+  };
+
+  setTimeout(() => {
+    setErrorMessage("");
+  }, 3000);
 
   return (
     <div className="w-screen h-screen flex items-center justify-center relative overflow-hidden">
@@ -90,6 +108,7 @@ const SignUp = () => {
               placeholder="Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              onKeyDown={handleKeyDown}
               className="bg-transparent border-b-2 border-gray-200 focus:outline-none focus:border-green-500 w-full pb-2"
               required
             />
@@ -99,6 +118,7 @@ const SignUp = () => {
               placeholder="Enter verification code"
               value={userInputCode}
               onChange={(e) => setUserInputCode(e.target.value)}
+              onKeyDown={handleKeyDown}
               className="bg-transparent border-b-2 border-gray-200 focus:outline-none focus:border-green-500 w-full pb-2"
               required
             />
@@ -120,16 +140,16 @@ const SignUp = () => {
             Verify
           </button>
         )}
+
         <p className="text-center">
           Already have an account?{" "}
           <Link to="/signin" className="underline hover:text-blue-500">
             Sign In
           </Link>
         </p>
+
         {errorMessage && (
-          <div className="message font-grotesk text-red-600">
-            {errorMessage}
-          </div>
+          <div className="message font-grotesk text-red-600">{errorMessage}</div>
         )}
         {successMessage && (
           <div className="message font-grotesk text-green-600">

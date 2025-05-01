@@ -3,6 +3,9 @@ import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import { Helix } from "ldrs/react";
 import "ldrs/react/Helix.css";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const SignIn = () => {
   const [email, setEmail] = useState("");
@@ -49,7 +52,7 @@ const SignIn = () => {
     }
 
     try {
-      const response = await axios.post("https://sowsmart.onrender.com/login-farmer", {
+      const response = await axios.post(`${process.env.BASE_URL}/login-farmer`, {
         email,
         password,
       });
@@ -76,7 +79,7 @@ const SignIn = () => {
 
     try {
       showTempMessage("success", "Sending code to your email...");
-      const res = await axios.post("https://sowsmart.onrender.com/send-reset-code", {
+      const res = await axios.post(`${process.env.BASE_URL}/send-reset-code`, {
         email,
       });
       setCode("");
@@ -102,7 +105,7 @@ const SignIn = () => {
     }
 
     try {
-      const res = await axios.post("https://sowsmart.onrender.com/reset-password", {
+      const res = await axios.post(`${process.env.BASE_URL}/reset-password`, {
         email,
         code,
         newPassword,
@@ -126,6 +129,21 @@ const SignIn = () => {
       }
     } catch (err) {
       showTempMessage("error", "Password reset failed.");
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      if (forgotMode) {
+        if (codeSent) {
+          handleResetPassword();
+        } else {
+          handleSendCode();
+        }
+      } else {
+        handleLogin();
+      }
     }
   };
 
@@ -161,6 +179,7 @@ const SignIn = () => {
             placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            onKeyDown={handleKeyDown}
             className="bg-transparent border-b-2 border-gray-200 focus:outline-none focus:border-green-500 w-full pb-2"
             required
           />
@@ -171,6 +190,7 @@ const SignIn = () => {
               placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              onKeyDown={handleKeyDown}
               className="bg-transparent border-b-2 border-gray-200 focus:outline-none focus:border-green-500 w-full pb-2"
               required
             />
@@ -183,6 +203,7 @@ const SignIn = () => {
                 placeholder="Verification Code"
                 value={code}
                 onChange={(e) => setCode(e.target.value)}
+                onKeyDown={handleKeyDown}
                 className="bg-transparent border-b-2 border-gray-200 focus:outline-none focus:border-green-500 w-full pb-2"
               />
               <input
@@ -190,6 +211,7 @@ const SignIn = () => {
                 placeholder="New Password"
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
+                onKeyDown={handleKeyDown}
                 className="bg-transparent border-b-2 border-gray-200 focus:outline-none focus:border-green-500 w-full pb-2"
               />
             </>

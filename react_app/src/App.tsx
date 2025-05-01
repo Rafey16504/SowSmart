@@ -2,6 +2,9 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Grid } from "ldrs/react";
 import "ldrs/react/Grid.css";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 interface Weather {
   temperature: number;
@@ -10,7 +13,6 @@ interface Weather {
   humidity: number;
   windSpeed: number;
 }
-
 interface DailyForecast {
   date: string;
   temp: number;
@@ -19,7 +21,6 @@ interface DailyForecast {
   sunrise: string;
   sunset: string;
 }
-
 interface Alert {
   event: string;
   description: string;
@@ -27,245 +28,213 @@ interface Alert {
   end: number;
 }
 
-interface Recommendation {
-  crop: string;
-  currentPrice: number;
-  growth: string;
-}
-
 function App() {
   const [currentWeather, setCurrentWeather] = useState<Weather | null>(null);
   const [weeklyWeather, setWeeklyWeather] = useState<DailyForecast[]>([]);
   const [alerts, setAlerts] = useState<Alert[]>([]);
-  const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
   const [message, setMessage] = useState<string | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
     if ("geolocation" in navigator) {
       navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
-          fetchWeather(latitude, longitude);
-        },
-        () => {
-          setMessage("Unable to retrieve location.");
-        }
+        ({ coords: { latitude, longitude } }) =>
+          fetchWeather(latitude, longitude),
+        () => setMessage("Unable to retrieve location.")
       );
     } else {
       setMessage("Geolocation is not supported by your browser.");
     }
   }, []);
 
-  const fetchWeather = async (latitude: number, longitude: number) => {
+  const fetchWeather = async (lat: number, lon: number) => {
     try {
-      const response = await fetch("https://sowsmart.onrender.com/get-weather", {
+      const res = await fetch(`${process.env.BASE_URL}/get-weather`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ latitude, longitude }),
+        body: JSON.stringify({ latitude: lat, longitude: lon }),
       });
-      const data = await response.json();
-      if (response.ok) {
-        setCurrentWeather({
-          temperature: data.current.temperature,
-          description: data.current.description,
-          icon: `https://openweathermap.org/img/wn/${data.current.icon}@2x.png`,
-          humidity: data.current.humidity,
-          windSpeed: data.current.windSpeed,
-        });
-        setWeeklyWeather(data.weekly);
-        setAlerts(data.alerts || []);
-      } else {
-        setMessage("Failed to fetch weather data.");
-      }
-    } catch (err) {
+      const data = await res.json();
+      if (!res.ok) throw new Error();
+
+      setCurrentWeather({
+        temperature: data.current.temperature,
+        description: data.current.description,
+        icon: `https://openweathermap.org/img/wn/${data.current.icon}@2x.png`,
+        humidity: data.current.humidity,
+        windSpeed: data.current.windSpeed,
+      });
+      setWeeklyWeather(data.weekly);
+      setAlerts(data.alerts || []);
+    } catch {
       setMessage("Failed to fetch weather data.");
     }
   };
 
-  const handleWeatherContainerClick = () => {
-    if (currentWeather === null) return;
-    navigate("/weekly-forecast", { state: { weeklyWeather } });
-  };
-
-  const handleCropRecommendationClick = () => {
-    navigate("/crop-recommendation", { state: { recommendations } });
-  };
-
-  const handleCropInsightsClick = () => {
-    navigate("/crop-insights");
-  };
-
-  const handleDiseaseDetectionClick = () => {
-    navigate("/disease-detection");
-  };
-
-  const getDayOfWeek = (dateString: string) => {
-    const date = new Date(dateString);
-    const daysOfWeek = [
-      "Sunday",
-      "Monday",
-      "Tuesday",
-      "Wednesday",
-      "Thursday",
-      "Friday",
-      "Saturday",
-    ];
-    return daysOfWeek[date.getDay()];
-  };
-
-  const currentDate = new Date();
-  const currentDay = getDayOfWeek(currentDate.toISOString());
-
   return (
-    <div className="font-grotesk relative min-h-screen flex flex-col overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-br from-green-50 via-white to-green-100 z-0" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,_var(--tw-gradient-stops))] from-green-200/40 via-white/0 to-green-300/10 z-0" />
+    <div className="font-grotesk relative min-h-screen flex flex-col overflow-hidden bg-[#FFE0CC]"
+    >
+      <div className="absolute inset-0 bg-gradient-to-br from-green-200 via-white to-green-200 z-0" />
+      <div className="absolute inset-0 from-green-400/40 via-white/0 to-green-600/10 z-0" />
       <div className="absolute top-0 left-0 w-full h-full bg-noise-pattern opacity-5 z-0 pointer-events-none" />
-      <header className="relative bg-green-700 shadow-lg py-6 px-4 sm:px-8 flex justify-between items-center z-10 rounded-b-3xl">
-        <h1 className="text-4xl sm:text-5xl font-bold text-white drop-shadow-md animate-pulse">
-          🌱 SowSmart
-        </h1>
-        <div className="flex items-center gap-4">
-          <button
-            onClick={() => navigate("/")}
-            className="flex items-center gap-2 text-white text-sm sm:text-base hover:border-red-300 rounded-md px-3 py-1 transition-all"
-            title="Logout"
+
+      <header className="relative flex justify-center items-center z-10">
+        <img
+          src="/SowSmart-logo1.png"
+          alt="SowSmart Logo"
+          className="h-64 object-contain drop-shadow-md"
+        />
+        <button
+          onClick={() => navigate("/")}
+          className="absolute top-8 right-6 text-green-800 hover:text-red-400 transition"
+          title="Logout"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            className="w-8 h-8"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
               strokeWidth={1.5}
-              stroke="currentColor"
-              className="w-6 h-6"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6A2.25 2.25 0 005.25 5.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M18 12H9m0 0l3-3m-3 3l3 3"
-              />
-            </svg>
-          </button>
-        </div>
+              d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6A2.25 2.25 0 005.25 5.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M18 12H9m0 0l3-3m-3 3l3 3"
+            />
+          </svg>
+        </button>
       </header>
+
       {message && (
-        <div className="message font-grotesk text-green-600">{message}</div>
+        <p className="text-center text-green-700 z-10 mt-4">{message}</p>
       )}
-      <main className="relative flex-grow px-6 py-10 flex flex-col items-center justify-center gap-12 z-10">
-        <section className="text-center max-w-xl">
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-800 mb-2">
-            Welcome to <span className="text-green-700">SowSmart</span>
-          </h2>
-          <p className="text-gray-600 text-lg">
-            Manage your smart farming solutions interactively and efficiently.
-          </p>
-        </section>
-        <section className="grid grid-cols-1 md:grid-cols-3 gap-10 w-full max-w-6xl">
-          <div
-            onClick={handleWeatherContainerClick}
-            className="relative bg-gradient-to-br from-green-200 to-green-50 p-6 rounded-2xl shadow-lg hover:scale-105 hover:shadow-2xl transition-transform duration-300 cursor-pointer border border-green-300"
-          >
-            <h3 className="text-xl font-semibold text-gray-800 mb-3">
-              Real-time Weather
-            </h3>
-            {currentWeather ? (
-              <div className="space-y-1 text-gray-700">
-                <div>
-                  <strong>{currentDay}</strong>,{" "}
-                  {currentDate.toLocaleDateString()}
-                </div>
-                <div>
-                  <strong>Temperature:</strong> {currentWeather.temperature}°C
-                </div>
-                <div>
-                  <strong>Condition:</strong> {currentWeather.description}
-                </div>
-                <div>
-                  <strong>Humidity:</strong> {currentWeather.humidity}%
-                </div>
-                <div>
-                  <strong>Wind Speed:</strong> {currentWeather.windSpeed} m/s
-                </div>
+
+      <main className="relative flex-grow px-6 flex flex-col items-center justify-center gap-12 z-10 -mt-20">
+        <section className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full max-w-3xl">
+          {currentWeather ? (
+            <div
+              onClick={() =>
+                navigate("/weekly-forecast", { state: { weeklyWeather } })
+              }
+              className="cursor-pointer p-6 rounded-2xl shadow-mdhover:shadow-2xl transition-all duration-300 flex flex-col justify-center items-center space-y-2"
+            >
+              <h2 className="text-xl font-semibold mb-2 text-green-700 self-start">
+                Current Weather
+              </h2>
+              <div className="flex items-center gap-4">
                 <img
                   src={currentWeather.icon}
                   alt="weather icon"
-                  className="w-14 h-14 mt-2"
+                  className="w-16 h-16"
                 />
+                <div>
+                  <p className="text-3xl font-bold text-gray-800">
+                    {currentWeather.temperature}°C
+                  </p>
+                  <p className="capitalize text-gray-600">
+                    {currentWeather.description}
+                  </p>
+                </div>
               </div>
-            ) : (
-              <div className="flex justify-center items-center h-40">
-                <Grid size="80" speed="1" color="black" />
+              <div className="mt-4 text-md text-gray-600 space-y-1 flex flex-col justify-center items-center ">
+                <p>💧 Humidity: {currentWeather.humidity}%</p>
+                <p>🌬️ Wind: {currentWeather.windSpeed} km/h</p>
               </div>
-            )}
+              <p className="text-green-600 underline self-start">
+                Tap to view weekly forecast →
+              </p>
+            </div>
+          ) : !message ? (
+            <div className="flex flex-col items-center justify-center h-64 space-y-4">
+              <Grid size="80" speed="1" color="black" />
+              <p className="text-gray-700 font-medium text-center">
+                Fetching your local weather data...
+              </p>
+            </div>
+          ) : null}
+
+          {alerts.length > 0 && (
+            <section className="w-full max-w-4xl p-6 rounded-xl bg-red-50 border border-red-300 shadow-md mt-10">
+              <h3 className="text-xl font-semibold text-red-700 mb-3">
+                🚨 Weather Alerts
+              </h3>
+              <div className="space-y-4">
+                {alerts.map((alert, index) => (
+                  <div key={index} className="text-red-800">
+                    <strong>{alert.event}</strong>
+                    <p>{alert.description}</p>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+
+          <div
+            onClick={() => navigate("/crop-recommendation")}
+            className="relative cursor-pointer w-full h-64 rounded-2xl shadow-md hover:shadow-2xl hover:scale-[1.03] transition-all duration-300 overflow-hidden"
+          >
+            <img
+              src="/crop-rec.jpg"
+              alt="Crop Recommendation"
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
+              <h3 className="text-white text-2xl font-semibold">
+                Crop Recommendation
+              </h3>
+            </div>
           </div>
 
           <div
-            onClick={handleCropRecommendationClick}
-            className="relative bg-gradient-to-br from-yellow-100 to-yellow-50 p-6 rounded-2xl shadow-lg hover:scale-105 hover:shadow-2xl transition-transform duration-300 cursor-pointer border border-yellow-300"
+            onClick={() => navigate("/crop-insights")}
+            className="relative cursor-pointer w-full h-64 rounded-2xl shadow-md hover:shadow-2xl hover:scale-[1.03] transition-all duration-300 overflow-hidden"
           >
-            <h3 className="text-xl font-semibold text-gray-800 mb-3">
-              Crop Recommendation
-            </h3>
-            <p className="text-gray-700">
-              Get personalized crop suggestions based on your soil and weather.
-            </p>
-          </div>
-
-          <div
-            onClick={handleCropInsightsClick}
-            className="relative bg-gradient-to-br from-indigo-100 to-indigo-50 p-6 rounded-2xl shadow-lg hover:scale-105 hover:shadow-2xl transition-transform duration-300 cursor-pointer border border-indigo-300"
-          >
-            <h3 className="text-xl font-semibold text-gray-800 mb-3">
-              Crop Insights
-            </h3>
-            <p className="text-gray-700">
-              Analyze price history, forecast, and volatility per crop.
-            </p>
+            <img
+              src="/crop-insights1.jpg"
+              alt="Crop Insights"
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
+              <h3 className="text-white text-2xl font-semibold">
+                Crop Insights
+              </h3>
+            </div>
           </div>
 
           <div
             onClick={() => navigate("/ai-chat")}
-            className="relative bg-gradient-to-br from-purple-100 to-purple-50 p-6 rounded-2xl shadow-lg hover:scale-105 hover:shadow-2xl transition-transform duration-300 cursor-pointer border border-purple-300"
+            className="relative cursor-pointer w-full h-64 rounded-2xl shadow-md hover:shadow-2xl hover:scale-[1.03] transition-all duration-300 overflow-hidden"
           >
-            <h3 className="text-xl font-semibold text-gray-800 mb-3">
-              AI Chatbot
-            </h3>
-            <p className="text-gray-700">
-              Ask farming-related questions to our smart AI assistant.
-            </p>
+            <img
+              src="/ai-chat.jpg"
+              alt="Disease Detection"
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
+              <h3 className="text-white text-2xl font-semibold">CropMind</h3>
+            </div>
           </div>
 
           <div
-            onClick={handleDiseaseDetectionClick}
-            className="relative bg-gradient-to-br from-red-100 to-red-50 p-6 rounded-2xl shadow-lg hover:scale-105 hover:shadow-2xl transition-transform duration-300 cursor-pointer border border-red-300"
+            onClick={() => navigate("/disease-detection")}
+            className="relative cursor-pointer w-full h-64 rounded-2xl shadow-md hover:shadow-2xl hover:scale-[1.03] transition-all duration-300 overflow-hidden"
           >
-            <h3 className="text-xl font-semibold text-gray-800 mb-3">
-              Disease Detection
-            </h3>
-            <p className="text-gray-700">
-              Upload a leaf photo to detect plant diseases.
-            </p>
+            <img
+              src="/disease-detection.jpg"
+              alt="Disease Detection"
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
+              <h3 className="text-white text-2xl font-semibold">
+                Disease Detection
+              </h3>
+            </div>
           </div>
         </section>
-
-        {alerts.length > 0 && (
-          <section className="w-full max-w-4xl p-6 rounded-xl bg-red-50 border border-red-300 shadow-md">
-            <h3 className="text-xl font-semibold text-red-700 mb-3">
-              🚨 Weather Alerts
-            </h3>
-            <div className="space-y-4">
-              {alerts.map((alert, index) => (
-                <div key={index} className="text-red-800">
-                  <strong>{alert.event}</strong>
-                  <p>{alert.description}</p>
-                </div>
-              ))}
-            </div>
-          </section>
-        )}
       </main>
-      <footer className="relative bg-gray-900 py-4 text-center text-white text-sm z-10 rounded-t-3xl">
+
+      <footer className="relative py-4 text-center text-black text-sm z-10 rounded-t-3xl">
         <p>&copy; {new Date().getFullYear()} SowSmart. All rights reserved.</p>
       </footer>
     </div>

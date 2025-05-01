@@ -1,5 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const InputDetails = () => {
   const [farmerName, setFarmerName] = useState("");
@@ -60,6 +63,13 @@ const InputDetails = () => {
     }
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleSubmit(e);
+    }
+  };
+
   return (
     <div className="w-screen h-screen flex items-center justify-center">
       <div className="w-full max-w-lg bg-white p-10 flex flex-col items-center space-y-10">
@@ -88,6 +98,7 @@ const InputDetails = () => {
             placeholder="Farmer Name"
             value={farmerName}
             onChange={(e) => setFarmerName(e.target.value)}
+            onKeyDown={handleKeyDown}
             className="bg-transparent border-b-2 border-gray-300 focus:outline-none focus:border-green-500 pb-2 font-grotesk"
           />
 
@@ -108,6 +119,7 @@ const InputDetails = () => {
             type="date"
             value={dob}
             onChange={(e) => setDob(e.target.value)}
+            onKeyDown={handleKeyDown}
             className="bg-transparent border-b-2 border-gray-300 focus:outline-none focus:border-green-500 pb-2 font-grotesk"
           />
 
@@ -116,6 +128,7 @@ const InputDetails = () => {
             placeholder="Phone Number"
             value={phoneNumber}
             onChange={(e) => setPhoneNumber(e.target.value)}
+            onKeyDown={handleKeyDown}
             className="bg-transparent border-b-2 border-gray-300 focus:outline-none focus:border-green-500 pb-2 font-grotesk"
           />
 
@@ -124,6 +137,7 @@ const InputDetails = () => {
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            onKeyDown={handleKeyDown}
             className="bg-transparent border-b-2 border-gray-300 focus:outline-none focus:border-green-500 pb-2 font-grotesk"
           />
 
@@ -132,6 +146,7 @@ const InputDetails = () => {
             placeholder="Confirm Password"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
+            onKeyDown={handleKeyDown}
             className="bg-transparent border-b-2 border-gray-300 focus:outline-none focus:border-green-500 pb-2 font-grotesk"
           />
 

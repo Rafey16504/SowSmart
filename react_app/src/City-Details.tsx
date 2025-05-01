@@ -1,19 +1,33 @@
 import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
+import { provinceCitiesMap, Province } from "./provinceCities";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const CityDetails = () => {
-  const [selectedProvince, setSelectedProvince] = useState("");
+  const [selectedProvince, setSelectedProvince] = useState<Province | "">("");
   const [city, setCity] = useState("");
   const [district, setDistrict] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+
+  const [availableCities, setAvailableCities] = useState<string[]>([]);
 
   const location = useLocation();
   const navigate = useNavigate();
 
   const { name, gender, dob, phoneNumber, email, password } =
     location.state || {};
+
+  const handleProvinceChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const province = e.target.value as Province;
+    setSelectedProvince(province);
+    setCity("");
+    setDistrict("");
+    setAvailableCities(provinceCitiesMap[province] || []);
+  };
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -36,7 +50,7 @@ const CityDetails = () => {
     }
 
     try {
-      await axios.post("https://sowsmart.onrender.com/register-farmer", {
+      await axios.post(`${process.env.BASE_URL}/register-farmer`, {
         name,
         gender,
         dateOfBirth: dob,
@@ -56,6 +70,13 @@ const CityDetails = () => {
       setErrorMessage(
         "There was an error registering the farmer. Please try again."
       );
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleSubmit(e);
     }
   };
 
@@ -84,35 +105,43 @@ const CityDetails = () => {
         >
           <select
             value={selectedProvince}
-            onChange={(e) => setSelectedProvince(e.target.value)}
+            onChange={handleProvinceChange}
             className="bg-transparent border-b-2 border-gray-300 focus:outline-none focus:border-green-500 pb-2"
             required
           >
             <option value="" disabled>
               Select Province
             </option>
-            <option value="Punjab">Punjab</option>
-            <option value="Sindh">Sindh</option>
-            <option value="Khyber Pakhtunkhwa">Khyber Pakhtunkhwa</option>
-            <option value="Balochistan">Balochistan</option>
-            <option value="Gilgit-Baltistan">Gilgit-Baltistan</option>
-            <option value="Azad Jammu & Kashmir">Azad Jammu & Kashmir</option>
+            {Object.keys(provinceCitiesMap).map((province) => (
+              <option key={province} value={province}>
+                {province}
+              </option>
+            ))}
           </select>
 
-          <input
-            type="text"
-            placeholder="City"
+          <select
             value={city}
             onChange={(e) => setCity(e.target.value)}
             className="bg-transparent border-b-2 border-gray-300 focus:outline-none focus:border-green-500 pb-2"
             required
-          />
+            disabled={!selectedProvince}
+          >
+            <option value="" disabled>
+              Select City
+            </option>
+            {availableCities.map((cityOption) => (
+              <option key={cityOption} value={cityOption}>
+                {cityOption}
+              </option>
+            ))}
+          </select>
 
           <input
             type="text"
-            placeholder="District"
+            placeholder="Town/Area"
             value={district}
             onChange={(e) => setDistrict(e.target.value)}
+            onKeyDown={handleKeyDown}
             className="bg-transparent border-b-2 border-gray-300 focus:outline-none focus:border-green-500 pb-2"
             required
           />

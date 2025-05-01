@@ -1,8 +1,5 @@
 # dependencies
 /node_modules
-
-# testing
-/test_images
 /tests
 /jest.config.js
 

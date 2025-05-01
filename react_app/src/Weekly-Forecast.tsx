@@ -14,6 +14,8 @@ const WeeklyForecast: FC = () => {
   const location = useLocation();
   const [weeklyWeather, setWeeklyWeather] = useState<DailyForecast[]>([]);
 
+
+  
   useEffect(() => {
     if (location.state && location.state.weeklyWeather) {
       setWeeklyWeather(location.state.weeklyWeather);
@@ -35,15 +37,15 @@ const WeeklyForecast: FC = () => {
   };
 
   return (
-    <div className="relative min-h-screen font-grotesk overflow-hidden scroll-smooth">
-      <div className="absolute inset-0 bg-gradient-to-tr from-green-100 via-white to-green-200 z-0" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,_var(--tw-gradient-stops))] from-green-200/40 via-white/0 to-green-100/10 z-0" />
+    <div className="font-grotesk relative min-h-screen flex flex-col overflow-hidden bg-[#FFE0CC]">
+      <div className="absolute inset-0 bg-gradient-to-br from-green-200 via-white to-green-200 z-0" />
+      <div className="absolute inset-0 from-green-400/40 via-white/0 to-green-600/10 z-0" />
       <div className="absolute top-0 left-0 w-full h-full bg-noise-pattern opacity-5 z-0 pointer-events-none" />
 
-      <header className="relative bg-green-700 py-6 px-4 sm:px-8 rounded-b-3xl shadow-lg z-10 flex justify-center">
+      <header className="relative px-4 sm:px-8 flex justify-center w-full animate-fade-in">
         <a
           href="/home"
-          className="absolute left-2 top-1/2 -translate-y-1/2 text-white hover:text-green-200 transition"
+          className="absolute left-2 top-1/2 -translate-y-1/2 text-black bg-green-300/80 rounded-full p-1  hover:text-green-200 transition"
           title="Go Back"
         >
           <svg
@@ -61,15 +63,17 @@ const WeeklyForecast: FC = () => {
             />
           </svg>
         </a>
-        <h1 className="text-white text-4xl sm:text-5xl font-bold drop-shadow-md">
-          Weekly Forecast
-        </h1>
+        <img
+          src="/SowSmart-logo-notext.png"
+          alt="SowSmart Logo"
+          className="w-40 h-40 object-cover"
+        />
       </header>
 
-      <main className="relative z-10 flex-grow py-10 w-full max-w-6xl mx-auto px-4 animate-fade-up">
-        <h2 className="text-3xl font-semibold text-center text-gray-800 mb-10">
-          7-Day Outlook
-        </h2>
+      <main className="relative z-10 flex-grow w-full max-w-6xl mx-auto px-4 animate-fade-up space-y-8 -mt-6">
+      <h1 className="text-black text-5xl md:text-5xl font-bold text-center underline animate-slide-up">
+          Weekly Forecast
+        </h1>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {weeklyWeather.map((day, index) => (
             <div
@@ -98,7 +102,7 @@ const WeeklyForecast: FC = () => {
         </div>
       </main>
 
-      <footer className="relative bg-gray-900 py-4 text-center text-white text-sm z-10 rounded-t-3xl animate-fade-in">
+      <footer className="relative py-4 text-center text-black text-sm z-10 animate-fade-in">
         <p>&copy; 2025 SowSmart. All rights reserved.</p>
       </footer>
     </div>

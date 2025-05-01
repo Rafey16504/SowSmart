@@ -2,23 +2,15 @@ import express, { Request, Response } from "express";
 import multer from "multer";
 import path from "path";
 import fs from "fs";
-import AWS from "aws-sdk";
+import { promisify } from "util";
 import dotenv from "dotenv";
 
 dotenv.config();
 export const diseaseRouter = express.Router();
 
-AWS.config.update({
-  region: "ap-southeast-2",
-  accessKeyId: process.env.AWS_ACCESSSKEY,
-  secretAccessKey: process.env.AWS_SECRETACCESSKEY,
-});
-
-const sagemaker = new AWS.SageMakerRuntime();
-
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    const uploadPath = path.join(__dirname, "/");
+    const uploadPath = path.join(__dirname, "/uploads");
     fs.mkdirSync(uploadPath, { recursive: true });
     cb(null, uploadPath);
   },
@@ -29,6 +21,10 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage: storage });
+const readFileAsync = promisify(fs.readFile);
+const unlinkAsync = promisify(fs.unlink);
+
+const LAMBDA_URL = process.env.DISEASEMODEL_URL || "";
 
 diseaseRouter.post(
   "/detect-disease",
@@ -39,31 +35,27 @@ diseaseRouter.post(
       return;
     }
 
-    const imagePath = path.join(__dirname, "/", req.file.filename);
-    const imageBuffer = fs.readFileSync(imagePath);
-
-    const endpointName = "your-endpoint-name";
-    const params = {
-      EndpointName: endpointName,
-      Body: imageBuffer,
-      ContentType: "image/jpeg",
-      Accept: "application/json",
-    };
+    const imagePath = path.join(__dirname, "/uploads", req.file.filename);
 
     try {
-      const data = await sagemaker.invokeEndpoint(params).promise();
-      
-      const result = JSON.parse(data.Body.toString("utf-8"));
-      res.json(result);
+      const imageBuffer = await readFileAsync(imagePath);
+      const imageBase64 = imageBuffer.toString("base64");
 
-      fs.unlink(imagePath, (unlinkErr) => {
-        if (unlinkErr) {
-          console.error("Error deleting uploaded image:", unlinkErr);
-        }
+      const lambdaResponse = await fetch(LAMBDA_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ image: imageBase64 }),
       });
-    } catch (err) {
-      console.error("Error invoking SageMaker endpoint:", err);
-      res.status(500).json({ error: "Model processing failed" });
+
+      const text = await lambdaResponse.text();
+
+      const result = JSON.parse(text);
+      
+      res.status(lambdaResponse.status).json(result);
+    } catch (error) {
+      res.status(500).json({ error: "Prediction failed" });
+    } finally {
+      await unlinkAsync(imagePath);
     }
   }
 );
