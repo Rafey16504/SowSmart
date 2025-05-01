@@ -44,5 +44,4 @@ app.use("/", cropInsightsRouter);
 app.use("/", resetPass);
 
 app.listen(port, () => {
-  console.log(`SowSmart backend running at port: ${port}`);
 });

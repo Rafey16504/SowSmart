@@ -107,15 +107,15 @@ const DiseaseDetection = () => {
   };
 
   return (
-    <div className="font-grotesk bg-gray-50 min-h-screen flex flex-col relative overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-br from-green-50 via-white to-green-100 z-0" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,_var(--tw-gradient-stops))] from-green-200/40 via-white/0 to-green-300/10 z-0" />
-      <div className="absolute top-0 left-0 w-full h-full bg-noise-pattern opacity-5 z-0 pointer-events-none" />
+    <div className="font-grotesk relative min-h-screen flex flex-col overflow-hidden bg-[#FFE0CC]">
+    <div className="absolute inset-0 bg-gradient-to-br from-green-200 via-white to-green-200 z-0" />
+    <div className="absolute inset-0 from-green-400/40 via-white/0 to-green-600/10 z-0" />
+    <div className="absolute top-0 left-0 w-full h-full bg-noise-pattern opacity-5 z-0 pointer-events-none" />
 
-      <header className="relative bg-green-700 py-6 px-4 sm:px-8 rounded-b-3xl shadow-lg z-10 flex justify-center w-full animate-fade-in">
+    <header className="relative  px-4 sm:px-8 flex justify-center w-full animate-fade-in">
         <a
           href="/home"
-          className="absolute left-2 top-1/2 -translate-y-1/2 text-white hover:text-green-200 transition"
+          className="absolute left-2 top-1/2 -translate-y-1/2 text-black bg-green-300/80 rounded-full p-1  hover:text-green-200 transition"
           title="Go Back"
         >
           <svg
@@ -133,12 +133,17 @@ const DiseaseDetection = () => {
             />
           </svg>
         </a>
-        <h1 className="text-white text-3xl md:text-5xl font-bold text-center">
-          Disease Detection
-        </h1>
+        <img
+          src="/SowSmart-logo-notext.png"
+          alt="SowSmart Logo"
+          className="w-40 h-40 object-cover"
+        />
       </header>
 
-      <main className="flex-grow py-10 w-full max-w-4xl mx-auto px-4 z-10 animate-fade-in">
+      <main className="flex-grow w-full max-w-4xl mx-auto px-4 z-10 animate-fade-in">
+      <h1 className="text-black text-5xl md:text-5xl font-bold text-center underline animate-slide-up">
+          Disease Detection
+        </h1>
         <div className="flex flex-col items-center">
           <div className=" p-8 mb-8 w-full text-center animate-zoom-in">
             <p className="text-3xl font-semibold text-gray-800 mb-4">
@@ -180,7 +185,7 @@ const DiseaseDetection = () => {
               </div>
             ) : (
               diagnosis && (
-                <div className="bg-yellow-100 p-6 rounded-lg shadow-lg w-full mb-6 text-left animate-fade-in delay-200">
+                <div className="bg-green-100 p-6 rounded-lg shadow-lg w-full mb-6 text-left animate-fade-in delay-200">
                   <h3 className="text-2xl font-bold text-gray-900 mb-3 text-center">
                     Diagnosis:
                   </h3>
@@ -204,9 +209,14 @@ const DiseaseDetection = () => {
             )}
           </div>
         </div>
+        <p className="text-gray-700 text-lg opacity-60">
+          Note: AI responses are subject to change, and may not always be
+          accurate or reliable. Always seek professional advice before making
+          decisions based on AI-generated information.{" "}
+        </p>
       </main>
 
-      <footer className="bg-gray-800 p-4 text-center text-white w-full z-10 rounded-t-3xl">
+      <footer className="p-4 text-center text-black w-full z-10">
         <p>&copy; 2025 SowSmart. All rights reserved.</p>
       </footer>
     </div>

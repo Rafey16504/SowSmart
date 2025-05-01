@@ -115,15 +115,15 @@ const CropRecommendation = () => {
   };
 
   return (
-    <div className="relative font-grotesk min-h-screen flex flex-col items-center overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-tr from-green-50 via-white to-green-100 z-0" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,_var(--tw-gradient-stops))] from-green-200/40 via-white/0 to-green-300/10 z-0" />
+    <div className="font-grotesk relative min-h-screen flex flex-col overflow-hidden bg-[#FFE0CC]">
+      <div className="absolute inset-0 bg-gradient-to-br from-green-200 via-white to-green-200 z-0" />
+      <div className="absolute inset-0 from-green-400/40 via-white/0 to-green-600/10 z-0" />
       <div className="absolute top-0 left-0 w-full h-full bg-noise-pattern opacity-5 z-0 pointer-events-none" />
 
-      <header className="relative bg-green-700 py-6 px-4 sm:px-8 rounded-b-3xl shadow-lg z-10 flex justify-center w-full animate-fade-in">
+      <header className="relative  px-4 sm:px-8 flex justify-center w-full animate-fade-in">
         <a
           href="/home"
-          className="absolute left-2 top-1/2 -translate-y-1/2 text-white hover:text-green-200 transition"
+          className="absolute left-2 top-1/2 -translate-y-1/2 text-black bg-green-300/80 rounded-full p-1  hover:text-green-200 transition"
           title="Go Back"
         >
           <svg
@@ -141,21 +141,25 @@ const CropRecommendation = () => {
             />
           </svg>
         </a>
-        <h1 className="text-white text-3xl md:text-5xl font-bold text-center">
-          Crop Recommendation
-        </h1>
+        <img
+          src="/SowSmart-logo-notext.png"
+          alt="SowSmart Logo"
+          className="w-40 h-40 object-cover"
+        />
       </header>
 
-      <main className="flex-grow py-10 w-full max-w-5xl px-4 relative z-10">
+      <main className="flex-grow py-10 w-full max-w-5xl px-4 relative z-10 -mt-16 space-y-6">
+        <h1 className="text-black text-5xl md:text-5xl font-bold text-center underline animate-slide-up">
+          Crop Recommendation
+        </h1>
         {!submitted && !loading && (
-          <div className="bg-white border-l-8 border-green-600 shadow-xl rounded-xl p-6 mb-10 text-center animate-fade-in">
-            <h2 className="text-2xl font-bold text-green-800 mb-2">
+          <div className="bg-white border-l-8 border-green-600 shadow-xl rounded-3xl p-8 mb-12 text-center animate-fade-in">
+            <h2 className="text-2xl font-bold text-green-800 mb-4">
               🌾 Know Before You Sow
             </h2>
             <p className="text-gray-700 text-lg">
               Discover the best crops for your soil and climate, powered by
-              smart weather insights. Just pick your soil type and let us guide
-              your harvest.
+              smart weather insights.
             </p>
           </div>
         )}
@@ -249,7 +253,7 @@ const CropRecommendation = () => {
         )}
       </main>
 
-      <footer className="relative bg-gray-800 p-4 text-center text-white w-full rounded-t-3xl z-10">
+      <footer className="relative p-4 text-center text-black w-full z-10">
         <p>&copy; 2025 SowSmart. All rights reserved.</p>
       </footer>
     </div>

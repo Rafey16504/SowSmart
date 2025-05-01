@@ -129,6 +129,21 @@ const SignIn = () => {
     }
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      if (forgotMode) {
+        if (codeSent) {
+          handleResetPassword();
+        } else {
+          handleSendCode();
+        }
+      } else {
+        handleLogin();
+      }
+    }
+  };
+
   if (loading) {
     return (
       <div className="w-screen h-screen flex items-center justify-center bg-white animate-fade-in">
@@ -161,6 +176,7 @@ const SignIn = () => {
             placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            onKeyDown={handleKeyDown}
             className="bg-transparent border-b-2 border-gray-200 focus:outline-none focus:border-green-500 w-full pb-2"
             required
           />
@@ -171,6 +187,7 @@ const SignIn = () => {
               placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              onKeyDown={handleKeyDown}
               className="bg-transparent border-b-2 border-gray-200 focus:outline-none focus:border-green-500 w-full pb-2"
               required
             />
@@ -183,6 +200,7 @@ const SignIn = () => {
                 placeholder="Verification Code"
                 value={code}
                 onChange={(e) => setCode(e.target.value)}
+                onKeyDown={handleKeyDown}
                 className="bg-transparent border-b-2 border-gray-200 focus:outline-none focus:border-green-500 w-full pb-2"
               />
               <input
@@ -190,6 +208,7 @@ const SignIn = () => {
                 placeholder="New Password"
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
+                onKeyDown={handleKeyDown}
                 className="bg-transparent border-b-2 border-gray-200 focus:outline-none focus:border-green-500 w-full pb-2"
               />
             </>
