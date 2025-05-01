@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import ReactMarkdown from "react-markdown";
 import { Helix } from "ldrs/react";
 import { useNavigate } from "react-router-dom";
@@ -141,6 +141,10 @@ const DiseaseDetection = () => {
     setLoadingStep(null);
   };
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   return (
     <div className="font-grotesk relative min-h-screen flex flex-col overflow-hidden bg-[#FFE0CC]">
       <div className="absolute inset-0 bg-gradient-to-br from-green-200 via-white to-green-200 z-0" />
@@ -184,9 +188,16 @@ const DiseaseDetection = () => {
           <div className="p-8 mb-8 w-full text-center animate-zoom-in">
             {!loading && (
               <>
-                <p className="text-3xl font-semibold text-gray-800 mb-4">
-                  Upload Your Plant Image
-                </p>
+                <div className="bg-white border-l-8 border-green-600 shadow-xl rounded-3xl p-8 mb-12 text-center animate-fade-in">
+                  <h2 className="text-2xl font-bold text-green-800 mb-4">
+                    Treat your plants with confidence
+                  </h2>
+                  <p className="text-gray-700 text-lg">
+                    Upload a photo of a plant or leaf, and our AI will first
+                    verify it's a plant, then diagnose any visible diseases. If
+                    a disease is found, you'll get recommended treatments.
+                  </p>
+                </div>
 
                 <input
                   type="file"

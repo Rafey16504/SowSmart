@@ -15,7 +15,7 @@ const WeeklyForecast: FC = () => {
   const location = useLocation();
   const [weeklyWeather, setWeeklyWeather] = useState<DailyForecast[]>([]);
   const navigate = useNavigate();
-  
+
   useEffect(() => {
     if (location.state && location.state.weeklyWeather) {
       setWeeklyWeather(location.state.weeklyWeather);
@@ -35,6 +35,10 @@ const WeeklyForecast: FC = () => {
     ];
     return daysOfWeek[date.getDay()];
   };
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   return (
     <div className="font-grotesk relative min-h-screen flex flex-col overflow-hidden bg-[#FFE0CC]">
@@ -72,7 +76,7 @@ const WeeklyForecast: FC = () => {
       </header>
 
       <main className="relative z-10 flex-grow w-full max-w-6xl mx-auto px-4 animate-fade-up space-y-8 -mt-6">
-      <h1 className="text-black text-5xl md:text-5xl font-bold text-center underline animate-slide-up">
+        <h1 className="text-black text-5xl md:text-5xl font-bold text-center underline animate-slide-up">
           Weekly Forecast
         </h1>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -80,7 +84,10 @@ const WeeklyForecast: FC = () => {
             <div
               key={index}
               className={`bg-white/70 backdrop-blur-lg p-6 rounded-3xl shadow-xl hover:shadow-2xl transition-shadow duration-300 text-center border border-green-200 animate-fade-in-up`}
-              style={{ animationDelay: `${index * 100}ms`, animationFillMode: "both" }}
+              style={{
+                animationDelay: `${index * 100}ms`,
+                animationFillMode: "both",
+              }}
             >
               <p className="text-lg font-semibold text-green-800 mb-1">
                 {getDayOfWeek(day.date)},{" "}
