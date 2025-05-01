@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import dotenv from "dotenv";
 
-dotenv.config();
+const BASE_URL = "https://sowsmart.onrender.com/"
+
 
 const InputDetails = () => {
   const [farmerName, setFarmerName] = useState("");
