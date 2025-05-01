@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const SignUp = () => {
   const [email, setEmail] = useState("");
@@ -14,7 +17,7 @@ const SignUp = () => {
 
   const checkExisting = async () => {
     try {
-      const response = await axios.post("https://sowsmart.onrender.com/get-farmer", {
+      const response = await axios.post(`${process.env.BASE_URL}/get-farmer`, {
         email: email,
       });
       if (response.data.success) {
@@ -42,7 +45,7 @@ const SignUp = () => {
     } else {
       setSuccessMessage("Please wait while we send you a verification code!");
       try {
-        const { data } = await axios.post("https://sowsmart.onrender.com/send-email/", {
+        const { data } = await axios.post(`${process.env.BASE_URL}/send-email/`, {
           email,
         });
 

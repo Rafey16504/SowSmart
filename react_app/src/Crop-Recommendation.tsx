@@ -2,6 +2,9 @@ import { useState } from "react";
 import axios from "axios";
 import { Quantum } from "ldrs/react";
 import "ldrs/react/Quantum.css";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const soilPhMap: Record<string, [number, number]> = {
   sandy: [5.5, 6.0],
@@ -49,7 +52,7 @@ const CropRecommendation = () => {
         const { latitude, longitude } = position.coords;
         try {
           const response = await fetch(
-            "https://sowsmart.onrender.com/get-weather-average",
+            `${process.env.BASE_URL}/get-weather-average`,
             {
               method: "POST",
               headers: { "Content-Type": "application/json" },
@@ -96,7 +99,7 @@ const CropRecommendation = () => {
 
     try {
       const response = await axios.post(
-        "https://sowsmart.onrender.com/crop-recommendation",
+        `${process.env.BASE_URL}/crop-recommendation`,
         {
           soilType,
           temperature: averages.temp,

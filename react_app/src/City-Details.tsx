@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import { provinceCitiesMap, Province } from "./provinceCities";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const CityDetails = () => {
   const [selectedProvince, setSelectedProvince] = useState<Province | "">("");
@@ -47,7 +50,7 @@ const CityDetails = () => {
     }
 
     try {
-      await axios.post("https://sowsmart.onrender.com/register-farmer", {
+      await axios.post(`${process.env.BASE_URL}/register-farmer`, {
         name,
         gender,
         dateOfBirth: dob,

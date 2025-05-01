@@ -2,6 +2,9 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Grid } from "ldrs/react";
 import "ldrs/react/Grid.css";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 interface Weather {
   temperature: number;
@@ -46,7 +49,7 @@ function App() {
 
   const fetchWeather = async (lat: number, lon: number) => {
     try {
-      const res = await fetch("https://sowsmart.onrender.com/get-weather", {
+      const res = await fetch(`${process.env.BASE_URL}/get-weather`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ latitude: lat, longitude: lon }),

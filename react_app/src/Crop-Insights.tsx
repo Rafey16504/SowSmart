@@ -13,6 +13,9 @@ import {
   Cell,
   Legend,
 } from "recharts";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const shadesOfGreen = [
   "#2E8B57",
@@ -54,7 +57,7 @@ export default function CropInsights() {
   );
 
   useEffect(() => {
-    axios.get("https://sowsmart.onrender.com/crop-options").then((res) => {
+    axios.get(`${process.env.BASE_URL}/crop-options`).then((res) => {
       setCropOptions(res.data.crops);
       setSelectedCrop(res.data.crops[0]);
     });
@@ -63,7 +66,7 @@ export default function CropInsights() {
   useEffect(() => {
     if (!selectedCrop) return;
     axios
-      .get("https://sowsmart.onrender.com/crop-insights", {
+      .get(`${process.env.BASE_URL}/crop-insights`, {
         params: { crop: selectedCrop },
       })
       .then((res) => {
@@ -83,7 +86,7 @@ export default function CropInsights() {
   useEffect(() => {
     if (!selectedMonth) return;
     axios
-      .get("https://sowsmart.onrender.com/monthly-top-crops", {
+      .get(`${process.env.BASE_URL}/monthly-top-crops`, {
         params: { month: selectedMonth },
       })
       .then((res) => setTopCrops(res.data.topCrops))

@@ -1,5 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const InputDetails = () => {
   const [farmerName, setFarmerName] = useState("");

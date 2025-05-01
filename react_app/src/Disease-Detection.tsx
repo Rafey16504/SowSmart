@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import ReactMarkdown from "react-markdown";
 import { Grid } from "ldrs/react";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const DiseaseDetection = () => {
   const [image, setImage] = useState<File | null>(null);
@@ -26,7 +29,7 @@ const DiseaseDetection = () => {
     formData.append("image", image);
 
     try {
-      const response = await fetch("https://sowsmart.onrender.com/detect-disease", {
+      const response = await fetch(`${process.env.BASE_URL}/detect-disease`, {
         method: "POST",
         body: formData,
       });
@@ -41,7 +44,7 @@ const DiseaseDetection = () => {
 
         setDiagnosis(readableName);
 
-        const chatbotResponse = await fetch("https://sowsmart.onrender.com/ask-ai", {
+        const chatbotResponse = await fetch(`${process.env.BASE_URL}/ask-ai`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -64,7 +67,7 @@ const DiseaseDetection = () => {
         );
         fallbackForm.append("image", image);
 
-        const fallbackResponse = await fetch("https://sowsmart.onrender.com/ask-ai", {
+        const fallbackResponse = await fetch(`${process.env.BASE_URL}/ask-ai`, {
           method: "POST",
           body: fallbackForm,
         });
@@ -80,27 +83,8 @@ const DiseaseDetection = () => {
         }
       }
     } catch (error) {
-      const fallbackForm = new FormData();
-        fallbackForm.append(
-          "message",
-          "Please identify the plant disease from this image. Add emojis and reply in a markdown format. Give detailed treatment or prevention tips."
-        );
-        fallbackForm.append("image", image);
-
-        const fallbackResponse = await fetch("https://sowsmart.onrender.com/ask-ai", {
-          method: "POST",
-          body: fallbackForm,
-        });
-
-        const fallbackData = await fallbackResponse.json();
-
-        if (fallbackResponse.ok) {
-          setDiagnosis("AI-based diagnosis");
-          setTreatment(fallbackData.reply);
-        } else {
-          setDiagnosis("Unknown");
-          setTreatment("Could not retrieve any diagnosis. Please try again.");
-        }
+          setDiagnosis("Error while getting diagnosis.");
+          setTreatment("Could not retrieve any diagnosis. Please try again after some time.");
     }
 
     setLoading(false);
