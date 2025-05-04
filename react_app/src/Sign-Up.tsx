@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 
@@ -16,53 +16,68 @@ const SignUp = () => {
 
   const checkExisting = async () => {
     try {
-      const response = await axios.post(`${BASE_URL}get-farmer`, {
-        email: email,
-      });
-      if (response.data.success) {
-        return false;
+      console.log(`Checking if email "${email}" already exists...`);
+      const response = await axios.post(`${BASE_URL}get-farmer`, { email });
+
+      if (!response.data.success) {
+        console.log(`TC-002 Failed: Email "${email}" already exists.`);
+        return true;
       }
-      return true;
+
+      console.log(`TC-001 Passed: Email "${email}" is new.`);
+      return false;
     } catch (error) {
+      console.error("Error while checking existing email:", error);
       return false;
     }
   };
 
   const handleEmailSubmit = async () => {
+    console.log(`User entered email: "${email}"`);
+
     if (!email) {
+      console.log("TC-003 Failed: Email field is empty.");
       setErrorMessage("Please enter your email!");
       return;
     }
 
     if (!email.includes("@")) {
+      console.log(`TC-003 Failed: Invalid email format entered: "${email}"`);
       setErrorMessage("Please enter a valid email!");
       return;
     }
 
-    if ((await checkExisting()) === true) {
+    if (await checkExisting()) {
       setErrorMessage("Email already exists. Please sign in!");
-    } else {
-      setSuccessMessage("Please wait while we send you a verification code!");
-      try {
-        const { data } = await axios.post(`${BASE_URL}send-email/`, {
-          email,
-        });
+      return;
+    }
 
-        setIsVerificationVisible(true);
-        setSuccessMessage("Check your email for the verification code!");
-        setVerificationCode(data.message);
-      } catch (error) {
-        setErrorMessage("Error sending email. Please try again!");
-      }
+    console.log(`TC-004: Sending verification code to "${email}"...`);
+    setSuccessMessage("Please wait while we send you a verification code!");
+
+    try {
+      const { data } = await axios.post(`${BASE_URL}send-email/`, { email });
+
+      console.log(`Verification code sent successfully. Code: ${data.message}`);
+      setIsVerificationVisible(true);
+      setSuccessMessage("Check your email for the verification code!");
+      setVerificationCode(data.message);
+    } catch (error) {
+      console.error("TC-004 Failed: Error sending verification email:", error);
+      setErrorMessage("Error sending email. Please try again!");
     }
   };
 
   const handleVerifyCode = () => {
+    console.log(`Verifying code. User entered: "${userInputCode}", Expected: "${verificationCode}"`);
+
     if (userInputCode !== verificationCode) {
+      console.log("TC-001 Failed: Code mismatch. Verification failed.");
       setErrorMessage("Invalid code. Please try again.");
       return;
     }
 
+    console.log(`TC-001 Passed: Verification successful for "${email}"`);
     setSuccessMessage("Verification successful!");
     setTimeout(() => {
       navigate("/input-details", { state: { email } });
@@ -80,23 +95,34 @@ const SignUp = () => {
     }
   };
 
-  setTimeout(() => {
-    setErrorMessage("");
-  }, 3000);
-
+  
+  useEffect(() => {
+    if (errorMessage) {
+      const timeoutId = setTimeout(() => {
+        setErrorMessage("");
+      }, 3000);
+      return () => clearTimeout(timeoutId);
+    }
+  }, [errorMessage]);
+  
+  useEffect(() => {
+    if (successMessage) {
+      const timeoutId = setTimeout(() => {
+        setSuccessMessage("");
+      }, 3000);
+      return () => clearTimeout(timeoutId);
+    }
+  }, [successMessage]);
+  
   return (
     <div className="w-screen h-screen flex items-center justify-center relative overflow-hidden">
       <div className="w-full h-full bg-white flex flex-col items-center justify-center space-y-8">
         <div className="text-center -mt-16">
-          <h1 className="font-grotesk font-extrabold text-6xl text-green-800">
-            SowSmart
-          </h1>
+          <h1 className="font-grotesk font-extrabold text-6xl text-green-800">SowSmart</h1>
         </div>
 
         <div className="w-9/12 h-1/6">
-          <p className="font-grotesk font-semibold text-5xl text-green-700">
-            Welcome
-          </p>
+          <p className="font-grotesk font-semibold text-5xl text-green-700">Welcome</p>
           <p className="font-grotesk text-lg text-green-600">Sign Up</p>
         </div>
 
@@ -148,14 +174,10 @@ const SignUp = () => {
         </p>
 
         {errorMessage && (
-          <div className="message font-grotesk text-red-600">
-            {errorMessage}
-          </div>
+          <div className="message font-grotesk text-red-600">{errorMessage}</div>
         )}
         {successMessage && (
-          <div className="message font-grotesk text-green-600">
-            {successMessage}
-          </div>
+          <div className="message font-grotesk text-green-600">{successMessage}</div>
         )}
       </div>
     </div>

@@ -1,5 +1,7 @@
-import express from "express";
-import bodyParser from "body-parser";
+import dotenv from "dotenv";
+dotenv.config();
+
+import express, { Request, Response, NextFunction } from "express";
 import cors from "cors";
 
 import { loginFarmer } from "./folder-signin/login";
@@ -19,11 +21,10 @@ const app = express();
 const port = process.env.PORT || 8000;
 
 app.use(cors());
-app.use(bodyParser.json());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true, limit: "25mb" }));
 
-app.use((req, res, next) => {
+app.use((req: Request, res: Response, next: NextFunction) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type,Authorization");
@@ -44,4 +45,5 @@ app.use("/", cropInsightsRouter);
 app.use("/", resetPass);
 
 app.listen(port, () => {
+  console.log(` Server running at http://localhost:${port}`);
 });

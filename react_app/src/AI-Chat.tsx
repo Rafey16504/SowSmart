@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { useNavigate } from "react-router-dom";
+
 const BASE_URL = "https://sowsmart.onrender.com/";
 
 const AIChatPage = () => {
@@ -10,9 +11,14 @@ const AIChatPage = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
-  const handleSubmit = async () => {
-    if (!message.trim()) return;
 
+  const handleSubmit = async () => {
+    if (!message.trim()) {
+      console.warn("AIChat: Submission blocked – empty message.");
+      return;
+    }
+
+    console.log(`AIChat: Submitting message – "${message}"`);
     setLoading(true);
     setError(null);
     setReply(null);
@@ -26,23 +32,30 @@ const AIChatPage = () => {
 
       const data = await res.json();
       if (res.ok) {
+        console.log("AIChat: Reply received from server.");
+        console.log("AIChat: Reply content received:", data.reply);
         setReply(data.reply);
       } else {
+        console.error("AIChat: Server responded with error:", data.error);
         setError(data.error || "Something went wrong.");
       }
     } catch (err) {
+      console.error("AIChat: Failed to connect to server:", err);
       setError("Failed to connect to the server.");
     } finally {
       setLoading(false);
     }
   };
+
   useEffect(() => {
+    console.log("AIChat: Component mounted. Scrolling to top.");
     window.scrollTo(0, 0);
   }, []);
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter") {
       e.preventDefault();
+      console.log("AIChat: Enter key pressed. Submitting...");
       handleSubmit();
     }
   };
@@ -56,7 +69,7 @@ const AIChatPage = () => {
       <header className="relative px-4 sm:px-8 flex justify-center w-full animate-fade-in">
         <a
           href="/home"
-          className="absolute left-2 top-1/2 -translate-y-1/2 text-black bg-green-300/80 rounded-full p-1  hover:text-green-200 transition"
+          className="absolute left-2 top-1/2 -translate-y-1/2 text-black bg-green-300/80 rounded-full p-1 hover:text-green-200 transition"
           title="Go Back"
         >
           <svg
@@ -78,7 +91,10 @@ const AIChatPage = () => {
           src="/SowSmart-logo-notext.png"
           alt="SowSmart Logo"
           className="w-40 h-40 object-cover"
-          onClick={() => navigate("/home")}
+          onClick={() => {
+            console.log("AIChat: Logo clicked. Navigating to /home");
+            navigate("/home");
+          }}
         />
       </header>
 
@@ -104,7 +120,10 @@ const AIChatPage = () => {
           <textarea
             className="w-full p-4 border border-green-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 resize-none min-h-[120px] bg-white/60 placeholder:text-gray-500"
             value={message}
-            onChange={(e) => setMessage(e.target.value)}
+            onChange={(e) => {
+              console.log("AIChat: User typing...");
+              setMessage(e.target.value);
+            }}
             onKeyDown={handleKeyDown}
             placeholder="Ask something like 'How do I prevent crop diseases?'"
           />
@@ -132,7 +151,7 @@ const AIChatPage = () => {
         <p className="text-gray-700 text-lg opacity-60">
           Note: AI responses are subject to change, and may not always be
           accurate or reliable. Always seek professional advice before making
-          decisions based on AI-generated information.{" "}
+          decisions based on AI-generated information.
         </p>
       </main>
 
