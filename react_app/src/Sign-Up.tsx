@@ -19,7 +19,7 @@ const SignUp = () => {
       console.log(`Checking if email "${email}" already exists...`);
       const response = await axios.post(`${BASE_URL}get-farmer`, { email });
 
-      if (response.data.success) {
+      if (!response.data.success) {
         console.log(`TC-002 Failed: Email "${email}" already exists.`);
         return true;
       }
@@ -95,16 +95,25 @@ const SignUp = () => {
     }
   };
 
+  
   useEffect(() => {
     if (errorMessage) {
       const timeoutId = setTimeout(() => {
-        setErrorMessage("in timeout");
+        setErrorMessage("");
       }, 3000);
-
       return () => clearTimeout(timeoutId);
     }
   }, [errorMessage]);
-
+  
+  useEffect(() => {
+    if (successMessage) {
+      const timeoutId = setTimeout(() => {
+        setSuccessMessage("");
+      }, 3000);
+      return () => clearTimeout(timeoutId);
+    }
+  }, [successMessage]);
+  
   return (
     <div className="w-screen h-screen flex items-center justify-center relative overflow-hidden">
       <div className="w-full h-full bg-white flex flex-col items-center justify-center space-y-8">

@@ -31,18 +31,18 @@ app.use((req: Request, res: Response, next: NextFunction) => {
   next();
 });
 
-app.use("/auth", loginFarmer);
-app.use("/auth", getFarmer);
-app.use("/signup", farmerRegister);
-app.use("/signup", farmerLocation);
-app.use("/verify", verifyEmail);
-app.use("/location", locationRouter);
-app.use("/weather", weatherRouter);
-app.use("/recommend", cropRecommend);
-app.use("/ai", aiModel);
-app.use("/disease", diseaseRouter);
-app.use("/crop", cropInsightsRouter);
-app.use("/reset", resetPass);
+app.use("/", loginFarmer);
+app.use("/", getFarmer);
+app.use("/", farmerRegister);
+app.use("/", farmerLocation);
+app.use("/", verifyEmail);
+app.use("/", locationRouter);
+app.use("/", weatherRouter);
+app.use("/", cropRecommend);
+app.use("/", aiModel);
+app.use("/", diseaseRouter);
+app.use("/", cropInsightsRouter);
+app.use("/", resetPass);
 
 app.listen(port, () => {
   console.log(` Server running at http://localhost:${port}`);

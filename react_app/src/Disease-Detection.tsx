@@ -10,9 +10,7 @@ const DiseaseDetection = () => {
   const [diagnosis, setDiagnosis] = useState<string | null>(null);
   const [treatment, setTreatment] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
-  const [loadingStep, setLoadingStep] = useState<
-    "precheck" | "diagnosis" | null
-  >(null);
+  const [loadingStep, setLoadingStep] = useState<"precheck" | "diagnosis" | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const navigate = useNavigate();
   const resultRef = useRef<HTMLDivElement | null>(null);
@@ -25,10 +23,15 @@ const DiseaseDetection = () => {
     setPreviewUrl(URL.createObjectURL(uploadedImage));
     setDiagnosis(null);
     setTreatment(null);
+
+    console.log("DiseaseDetection: Image selected:", uploadedImage.name);
   };
 
   const diagnoseDisease = async () => {
     if (!image) return;
+
+    console.log("DiseaseDetection: Starting diagnosis...");
+
     setLoading(true);
     setLoadingStep("precheck");
     setDiagnosis(null);
@@ -37,8 +40,7 @@ const DiseaseDetection = () => {
     const preCheckForm = new FormData();
     preCheckForm.append(
       "message",
-      "Please analyze this image and tell me if it is of a plant or a plant part. Also, is the plant healthy or unhealthy (only say its unhealthy if you see clear visible spots or infection, ignore very small details like holes and tears, also dont focus on discoloration a lot unless its clearly visible)? Reply concisely as 'plant: yes/no. health: healthy/unhealthy.'"
-    );
+      "Please analyze this image and tell me if it is of a plant or a plant part. Also, is the plant healthy or unhealthy (only say its unhealthy if you see clear visible spots or infection, ignore very small details like holes and tears, also dont focus on discoloration a lot unless its clearly visible)? Reply concisely as 'plant: yes/no. health: healthy/unhealthy.'"    );
     preCheckForm.append("image", image);
 
     try {
@@ -49,8 +51,10 @@ const DiseaseDetection = () => {
 
       const preCheckData = await preCheckResponse.json();
       const replyText = preCheckData.reply.toLowerCase();
+      console.log("DiseaseDetection: Pre-check AI reply:", replyText);
 
       if (!replyText.includes("plant: yes")) {
+        console.warn("DiseaseDetection: Image rejected — Not a plant.");
         setDiagnosis("Not a plant image");
         setTreatment("Please upload a valid image of a plant or plant part.");
         setLoading(false);
@@ -59,15 +63,15 @@ const DiseaseDetection = () => {
       }
 
       if (!replyText.includes("unhealthy")) {
+        console.log("DiseaseDetection: Image validated as healthy.");
         setDiagnosis("Healthy Plant");
-        setTreatment(
-          "This plant appears to be healthy. No treatment is needed."
-        );
+        setTreatment("This plant appears to be healthy. No treatment is needed.");
         setLoading(false);
         setLoadingStep(null);
         return;
       }
 
+      console.log("DiseaseDetection: Unhealthy plant detected. Proceeding to diagnosis...");
       setLoadingStep("diagnosis");
 
       const formData = new FormData();
@@ -81,10 +85,8 @@ const DiseaseDetection = () => {
       const data = await response.json();
 
       if (response.ok) {
-        const readableName = data.disease
-          .replace("___", " ")
-          .replace(/_/g, " ")
-          .trim();
+        const readableName = data.disease.replace("___", " ").replace(/_/g, " ").trim();
+        console.log("DiseaseDetection: Disease identified:", readableName);
 
         setDiagnosis(readableName);
 
@@ -97,17 +99,21 @@ const DiseaseDetection = () => {
         });
 
         const chatData = await chatbotResponse.json();
-
         if (chatbotResponse.ok) {
+          console.log("DiseaseDetection: Treatment advice received from AI.");
+          console.log("DiseaseDetection: Treatment content:", chatData.reply);
           setTreatment(chatData.reply);
         } else {
+          console.error("DiseaseDetection: Failed to fetch treatment from AI.");
           setTreatment("Failed to fetch treatment recommendation.");
         }
       } else {
+        console.warn("DiseaseDetection: Fallback triggered. Primary diagnosis failed.");
+
         const fallbackForm = new FormData();
         fallbackForm.append(
           "message",
-          "Please identify the plant disease from this image. Add emojis and reply in markdown. Provide detailed treatment or prevention tips."
+          "Please identify the plant disease from this image. Add emojis..."
         );
         fallbackForm.append("image", image);
 
@@ -119,9 +125,11 @@ const DiseaseDetection = () => {
         const fallbackData = await fallbackResponse.json();
 
         if (fallbackResponse.ok) {
+          console.log("DiseaseDetection: Fallback treatment received.");
           setDiagnosis("AI-based diagnosis");
           setTreatment(fallbackData.reply);
         } else {
+          console.error("DiseaseDetection: Both primary and fallback diagnosis failed.");
           setDiagnosis("Unknown");
           setTreatment("Could not retrieve any diagnosis. Please try again.");
         }
@@ -133,6 +141,7 @@ const DiseaseDetection = () => {
         }
       }, 300);
     } catch (error) {
+      console.error("DiseaseDetection: Diagnosis failed due to network or server error.", error);
       setDiagnosis("Could not diagnose.");
       setTreatment("Today's limit has been reached. Please try again later.");
     }
@@ -142,6 +151,7 @@ const DiseaseDetection = () => {
   };
 
   useEffect(() => {
+    console.log("DiseaseDetection: Component mounted. Scroll to top.");
     window.scrollTo(0, 0);
   }, []);
 

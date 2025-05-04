@@ -6,7 +6,7 @@ export const getFarmer = express.Router();
 getFarmer.post("/get-farmer", async (req: Request, res: Response) => {
   try {
     const { email } = req.body;
-
+    
     const result = await pool.query(
       "SELECT id FROM farmer WHERE email = $1",
       [email]
