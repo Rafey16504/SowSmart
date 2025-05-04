@@ -18,7 +18,10 @@ const WeeklyForecast: FC = () => {
 
   useEffect(() => {
     if (location.state && location.state.weeklyWeather) {
+      console.log("WeeklyForecast.tsx:17 Loaded weekly forecast data:", location.state.weeklyWeather);
       setWeeklyWeather(location.state.weeklyWeather);
+    } else {
+      console.warn("WeeklyForecast.tsx:19 No weekly weather data found in location.state.");
     }
   }, [location.state]);
 
@@ -33,10 +36,13 @@ const WeeklyForecast: FC = () => {
       "Friday",
       "Saturday",
     ];
-    return daysOfWeek[date.getDay()];
+    const day = daysOfWeek[date.getDay()];
+    console.log(`WeeklyForecast.tsx:28 Converting date: ${dateString} → ${day}`);
+    return day;
   };
 
   useEffect(() => {
+    console.log("WeeklyForecast.tsx:55 Component mounted: WeeklyForecast");
     window.scrollTo(0, 0);
   }, []);
 
@@ -49,7 +55,8 @@ const WeeklyForecast: FC = () => {
       <header className="relative px-4 sm:px-8 flex justify-center w-full animate-fade-in">
         <a
           href="/home"
-          className="absolute left-2 top-1/2 -translate-y-1/2 text-black bg-green-300/80 rounded-full p-1  hover:text-green-200 transition"
+          onClick={() => console.log("WeeklyForecast.tsx:46 Back arrow clicked: navigating to /home")}
+          className="absolute left-2 top-1/2 -translate-y-1/2 text-black bg-green-300/80 rounded-full p-1 hover:text-green-200 transition"
           title="Go Back"
         >
           <svg
@@ -71,7 +78,10 @@ const WeeklyForecast: FC = () => {
           src="/SowSmart-logo-notext.png"
           alt="SowSmart Logo"
           className="w-40 h-40 object-cover"
-          onClick={() => navigate("/home")}
+          onClick={() => {
+            console.log("WeeklyForecast.tsx:50 Navigating to home from logo click");
+            navigate("/home");
+          }}
         />
       </header>
 

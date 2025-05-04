@@ -28,12 +28,14 @@ const CropRecommendation = () => {
   const navigate = useNavigate();
 
   const handleSoilSelection = (soil: string) => {
+    console.log(`Soil selected: ${soil}`);
     setSoilType(soil);
     setRecommendation(null);
     setSubmitted(false);
   };
 
   const handleReset = () => {
+    console.log("Resetting crop recommendation state...");
     setSoilType("");
     setRecommendation(null);
     setSubmitted(false);
@@ -45,12 +47,15 @@ const CropRecommendation = () => {
     rainfall: number;
   } | null> => {
     if (!navigator.geolocation) {
+      console.warn("Geolocation not supported.");
       return null;
     }
 
     return new Promise((resolve) => {
       navigator.geolocation.getCurrentPosition(async (position) => {
         const { latitude, longitude } = position.coords;
+        console.log(`Fetching weather data for (${latitude}, ${longitude})...`);
+
         try {
           const response = await fetch(`${BASE_URL}get-weather-average`, {
             method: "POST",
@@ -59,17 +64,19 @@ const CropRecommendation = () => {
           });
 
           const data = await response.json();
-
           if (response.ok) {
+            console.log("Weather averages fetched:", data.averages);
             resolve({
               temp: data.averages.temperature,
               humidity: data.averages.humidity,
               rainfall: data.averages.rainfall,
             });
           } else {
+            console.error("Failed to get weather averages.");
             resolve(null);
           }
         } catch (error) {
+          console.error("Error fetching weather data:", error);
           resolve(null);
         }
       });
@@ -78,15 +85,18 @@ const CropRecommendation = () => {
 
   const handleSubmit = async () => {
     if (!soilType) {
+      console.warn("No soil type selected. Aborting submission.");
       return;
     }
 
+    console.log(`Submitting crop recommendation for ${soilType}...`);
     setRecommendation(null);
     setSubmitted(true);
     setLoading(true);
 
     const averages = await fetchWeatherAverages();
     if (!averages) {
+      console.error("Weather data unavailable. Cannot proceed.");
       setLoading(false);
       setSubmitted(false);
       return;
@@ -94,6 +104,14 @@ const CropRecommendation = () => {
 
     const [phMin, phMax] = soilPhMap[soilType];
     const avgPh = (phMin + phMax) / 2;
+    console.log(`Using avg PH: ${avgPh} for soil type: ${soilType}`);
+    console.log("Sending request with:", {
+      soilType,
+      temperature: averages.temp,
+      humidity: averages.humidity,
+      rainfall: averages.rainfall,
+      ph: avgPh,
+    });
 
     try {
       const response = await axios.post(`${BASE_URL}crop-recommendation`, {
@@ -105,14 +123,17 @@ const CropRecommendation = () => {
       });
 
       const data = response.data;
+      console.log("Crop recommendation received:", data.recommendation);
       setRecommendation(data.recommendation || "No recommendation found.");
     } catch (error) {
+      console.error("Crop recommendation request failed:", error);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
+    console.log("CropRecommendation component mounted.");
     window.scrollTo(0, 0);
   }, []);
 

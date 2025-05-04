@@ -3,8 +3,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import { provinceCitiesMap, Province } from "./provinceCities";
 
-const BASE_URL = "https://sowsmart.onrender.com/"
-
+const BASE_URL = "https://sowsmart.onrender.com/";
 
 const CityDetails = () => {
   const [selectedProvince, setSelectedProvince] = useState<Province | "">("");
@@ -18,11 +17,11 @@ const CityDetails = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const { name, gender, dob, phoneNumber, email, password } =
-    location.state || {};
+  const { name, gender, dob, phoneNumber, email, password } = location.state || {};
 
   const handleProvinceChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const province = e.target.value as Province;
+    console.log(`Province selected: ${province}`);
     setSelectedProvince(province);
     setCity("");
     setDistrict("");
@@ -33,6 +32,19 @@ const CityDetails = () => {
     event.preventDefault();
     setErrorMessage("");
     setSuccessMessage("");
+
+    console.log("Submitting registration with the following data:");
+    console.log({
+      name,
+      gender,
+      dob,
+      phoneNumber,
+      email,
+      password,
+      selectedProvince,
+      city,
+      district,
+    });
 
     if (
       !name ||
@@ -45,11 +57,13 @@ const CityDetails = () => {
       !city ||
       !district
     ) {
+      console.log("Validation failed: One or more required fields are empty.");
       setErrorMessage("Please complete all fields before submitting.");
       return;
     }
 
     try {
+      console.log("Validation passed. Sending registration data to server...");
       await axios.post(`${BASE_URL}register-farmer`, {
         name,
         gender,
@@ -62,14 +76,14 @@ const CityDetails = () => {
         district,
       });
 
+      console.log("Registration successful. Redirecting to home page...");
       setSuccessMessage("Registration successful! Redirecting...");
       setTimeout(() => {
         navigate("/");
       }, 1500);
     } catch (error) {
-      setErrorMessage(
-        "There was an error registering the farmer. Please try again."
-      );
+      console.error("Server error: Failed to register farmer.", error);
+      setErrorMessage("There was an error registering the farmer. Please try again.");
     }
   };
 
@@ -99,10 +113,7 @@ const CityDetails = () => {
           </div>
         )}
 
-        <form
-          onSubmit={handleSubmit}
-          className="flex flex-col space-y-10 font-grotesk"
-        >
+        <form onSubmit={handleSubmit} className="flex flex-col space-y-10 font-grotesk">
           <select
             value={selectedProvince}
             onChange={handleProvinceChange}
@@ -121,7 +132,10 @@ const CityDetails = () => {
 
           <select
             value={city}
-            onChange={(e) => setCity(e.target.value)}
+            onChange={(e) => {
+              console.log(`City selected: ${e.target.value}`);
+              setCity(e.target.value);
+            }}
             className="bg-transparent border-b-2 border-gray-300 focus:outline-none focus:border-green-500 pb-2"
             required
             disabled={!selectedProvince}
@@ -140,7 +154,10 @@ const CityDetails = () => {
             type="text"
             placeholder="Town/Area"
             value={district}
-            onChange={(e) => setDistrict(e.target.value)}
+            onChange={(e) => {
+              console.log(`District entered: ${e.target.value}`);
+              setDistrict(e.target.value);
+            }}
             onKeyDown={handleKeyDown}
             className="bg-transparent border-b-2 border-gray-300 focus:outline-none focus:border-green-500 pb-2"
             required

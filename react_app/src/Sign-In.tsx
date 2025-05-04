@@ -4,7 +4,8 @@ import axios from "axios";
 import { Helix } from "ldrs/react";
 import "ldrs/react/Helix.css";
 
-const BASE_URL = "https://sowsmart.onrender.com/"
+const BASE_URL = "https://sowsmart.onrender.com/";
+
 const SignIn = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -28,7 +29,6 @@ const SignIn = () => {
     } else {
       setErrorMessage(message);
     }
-
     setTimeout(() => {
       setSuccessMessage("");
       setErrorMessage("");
@@ -36,15 +36,18 @@ const SignIn = () => {
   };
 
   const handleLogin = async () => {
+    console.log(`Attempting login with email: "${email}" and password: "${password}"`);
     setErrorMessage("");
     setSuccessMessage("");
 
     if (!email || !password) {
+      console.log("Validation failed: Email or password empty");
       showTempMessage("error", "Please fill in both email and password.");
       return;
     }
 
     if (!email.includes("@") || !email.includes(".com")) {
+      console.log(`Validation failed: Invalid email format: "${email}"`);
       showTempMessage("error", "Please enter a valid email address.");
       return;
     }
@@ -56,48 +59,56 @@ const SignIn = () => {
       });
 
       if (response.data.success) {
+        console.log(`Login successful for user: "${email}"`);
         setLoading(true);
         setTimeout(() => {
           setLoading(false);
           navigate("/home");
         }, 1500);
       } else {
+        console.log(`Login failed: Incorrect credentials for "${email}"`);
         showTempMessage("error", "Incorrect email or password.");
       }
     } catch (error) {
+      console.error("Login request failed:", error);
       showTempMessage("error", "Login failed. Please try again.");
     }
   };
 
   const handleSendCode = async () => {
+    console.log(`Sending reset code to email: "${email}"`);
     if (!email) {
+      console.log("Validation failed: No email entered.");
       showTempMessage("error", "Please enter your email.");
       return;
     }
 
     try {
       showTempMessage("success", "Sending code to your email...");
-      const res = await axios.post(`${BASE_URL}send-reset-code`, {
-        email,
-      });
+      const res = await axios.post(`${BASE_URL}send-reset-code`, { email });
+
       setCode("");
       setNewPassword("");
+
       if (res.data.success) {
+        console.log(`Reset code successfully sent to "${email}"`);
         setCodeSent(true);
-        showTempMessage(
-          "success",
-          "Verification code sent. Please check your email."
-        );
+        showTempMessage("success", "Verification code sent. Please check your email.");
       } else {
+        console.log(`Reset code failed: Email not found - "${email}"`);
         showTempMessage("error", "Email not found.");
       }
     } catch (err) {
+      console.error("Reset code request failed:", err);
       showTempMessage("error", "Failed to send verification code.");
     }
   };
 
   const handleResetPassword = async () => {
+    console.log(`Attempting password reset with code: "${code}" and newPassword: "${newPassword}"`);
+
     if (!code || !newPassword) {
+      console.log("Validation failed: Missing code or new password.");
       showTempMessage("error", "Please enter both code and new password.");
       return;
     }
@@ -110,22 +121,19 @@ const SignIn = () => {
       });
 
       if (res.data.success) {
-        showTempMessage(
-          "success",
-          "Password reset successful. You can now log in."
-        );
+        console.log(`Password reset successful for "${email}". Redirecting to login.`);
+        showTempMessage("success", "Password reset successful. You can now log in.");
         setForgotMode(false);
         setCodeSent(false);
         setPassword("");
         setCode("");
         setNewPassword("");
       } else {
-        showTempMessage(
-          "error",
-          "New password must be different from the old password."
-        );
+        console.log(`Password reset failed: New password same as old for "${email}"`);
+        showTempMessage("error", "New password must be different from the old password.");
       }
     } catch (err) {
+      console.error("Reset password request failed:", err);
       showTempMessage("error", "Password reset failed.");
     }
   };
@@ -156,18 +164,14 @@ const SignIn = () => {
   return (
     <div className="w-screen h-screen flex items-center justify-center relative overflow-hidden">
       <div className="w-full h-full bg-white flex flex-col items-center justify-center space-y-8">
-        <h1 className="font-grotesk font-extrabold text-6xl text-green-800 -mt-16">
-          SowSmart
-        </h1>
+        <h1 className="font-grotesk font-extrabold text-6xl text-green-800 -mt-16">SowSmart</h1>
 
         <div className="w-9/12 h-1/6">
           <p className="font-grotesk font-semibold text-5xl text-green-700">
             {forgotMode ? "Reset Password" : "Welcome"}
           </p>
           <p className="font-grotesk text-lg text-green-600">
-            {forgotMode
-              ? "Enter your email to receive reset code"
-              : "Log In to your account"}
+            {forgotMode ? "Enter your email to receive reset code" : "Log In to your account"}
           </p>
         </div>
 
@@ -245,6 +249,7 @@ const SignIn = () => {
           {!forgotMode ? (
             <p
               onClick={() => {
+                console.log("Switched to Forgot Password mode");
                 setForgotMode(true);
                 setErrorMessage("");
                 setSuccessMessage("");
@@ -256,6 +261,7 @@ const SignIn = () => {
           ) : (
             <p
               onClick={() => {
+                console.log("Returning to Login mode");
                 setForgotMode(false);
                 setCodeSent(false);
                 setErrorMessage("");
@@ -276,14 +282,10 @@ const SignIn = () => {
         </p>
 
         {errorMessage && (
-          <div className="message font-grotesk text-red-600">
-            {errorMessage}
-          </div>
+          <div className="message font-grotesk text-red-600">{errorMessage}</div>
         )}
         {successMessage && (
-          <div className="message font-grotesk text-green-600">
-            {successMessage}
-          </div>
+          <div className="message font-grotesk text-green-600">{successMessage}</div>
         )}
       </div>
     </div>

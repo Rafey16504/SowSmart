@@ -58,41 +58,63 @@ export default function CropInsights() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    axios.get(`${BASE_URL}crop-options`).then((res) => {
-      setCropOptions(res.data.crops);
-      setSelectedCrop(res.data.crops[0]);
-    });
+    axios.get(`${BASE_URL}crop-options`)
+      .then((res) => {
+        setCropOptions(res.data.crops);
+        setSelectedCrop(res.data.crops[0]);
+        console.log("[Fetched crop options]", res.data.crops);
+      })
+      .catch((err) => {
+        console.error("[Error fetching crop options]", err);
+      });
   }, []);
+  
 
   useEffect(() => {
     if (!selectedCrop) return;
-    axios
-      .get(`${BASE_URL}crop-insights`, {
-        params: { crop: selectedCrop },
-      })
+  
+    console.log("[Selected crop]", selectedCrop);
+  
+    axios.get(`${BASE_URL}crop-insights`, {
+      params: { crop: selectedCrop },
+    })
       .then((res) => {
         setChartData(res.data.chartData);
         setVolatility(res.data.volatility);
         setForecast3Y(res.data.forecast3Y);
         setForecastLabels(res.data.forecastLabels);
+        console.log("[Crop insights data]", res.data);
       })
-      .catch(() => {
+      .catch((err) => {
+        console.error("[Error fetching crop insights]", err);
         setChartData([]);
         setVolatility("");
         setForecast3Y([]);
         setForecastLabels([]);
       });
   }, [selectedCrop]);
+  
 
   useEffect(() => {
     if (!selectedMonth) return;
+  
+    console.log(" Fetching top crops for month:", selectedMonth);
+  
     axios
       .get(`${BASE_URL}monthly-top-crops`, {
         params: { month: selectedMonth },
       })
-      .then((res) => setTopCrops(res.data.topCrops))
-      .catch(() => setTopCrops([]));
+      .then((res) => {
+        console.log(" Top crops API response:", res.data);
+        setTopCrops(res.data.topCrops);
+      })
+      .catch((err) => {
+        console.error(" Error fetching top crops:", err);
+        setTopCrops([]);
+      });
   }, [selectedMonth]);
+  
+  
 
   useEffect(() => {
     window.scrollTo(0, 0);
